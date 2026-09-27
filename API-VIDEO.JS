@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
       // MVP: presenter de prueba. Sustituye source_url por la imagen/asset
       // de tu avatar D-ID cuando hayas completado su creación.
-      const source_url = process.env.DID_SOURCE_URL;
+      const source_url = SOURCE_URL;
       if (!source_url) {
         return res.status(400).json({
           error: 'Falta DID_SOURCE_URL. Añade en Vercel la URL del avatar/presentador creado en D-ID.'
