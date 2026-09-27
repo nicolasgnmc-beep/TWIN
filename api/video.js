@@ -2,7 +2,11 @@ const DID_BASE = 'https://api.d-id.com';
 
 function authHeader() {
   const key = process.env.DID_API_KEY;
-  if (!key) throw new Error('Falta DID_API_KEY en Vercel');
+
+  if (!key) {
+    throw new Error('Falta DID_API_KEY en Vercel');
+  }
+
   return `Basic ${Buffer.from(key).toString('base64')}`;
 }
 
@@ -13,11 +17,16 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json'
     };
 
+    // ==========================================
+    // POST — CREAR VÍDEO
+    // ==========================================
     if (req.method === 'POST') {
       const { script, source_url, voice_id } = req.body || {};
 
       if (!script || typeof script !== 'string') {
-        return res.status(400).json({ error: 'Falta el guion.' });
+        return res.status(400).json({
+          error: 'Falta el guion.'
+        });
       }
 
       if (!source_url || typeof source_url !== 'string') {
@@ -31,9 +40,11 @@ export default async function handler(req, res) {
         headers,
         body: JSON.stringify({
           source_url,
+
           script: {
             type: 'text',
             input: script,
+
             provider: {
               type: 'microsoft',
               voice_id:
@@ -42,6 +53,7 @@ export default async function handler(req, res) {
                 'es-ES-AlvaroNeural'
             }
           },
+
           config: {
             fluent: true,
             pad_audio: 0
@@ -64,16 +76,24 @@ export default async function handler(req, res) {
       return res.status(200).json(data);
     }
 
+    // ==========================================
+    // GET — CONSULTAR ESTADO DEL VÍDEO
+    // ==========================================
     if (req.method === 'GET') {
       const { id } = req.query || {};
 
       if (!id) {
-        return res.status(400).json({ error: 'Falta id.' });
+        return res.status(400).json({
+          error: 'Falta id.'
+        });
       }
 
       const response = await fetch(
         `${DID_BASE}/talks/${encodeURIComponent(id)}`,
-        { headers }
+        {
+          method: 'GET',
+          headers
+        }
       );
 
       const data = await response.json();
@@ -91,14 +111,20 @@ export default async function handler(req, res) {
       return res.status(200).json(data);
     }
 
-    res.setHeader('Allow', 'GET, POST');
+    // ==========================================
+    // MÉTODOS NO PERMITIDOS
+    // ==========================================
+    res.setHeader('Allow', ['GET', 'POST']);
 
     return res.status(405).json({
       error: 'Método no permitido.'
     });
-  } catch (e) {
+
+  } catch (error) {
+    console.error('MIKLOZ / D-ID error:', error);
+
     return res.status(500).json({
-      error: e.message || 'Error interno.'
+      error: error?.message || 'Error interno.'
     });
   }
 }
