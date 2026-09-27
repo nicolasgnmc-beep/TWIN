@@ -1,58 +1,32 @@
 <!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MIKLOZ">
 
-  <meta
-    name="apple-mobile-web-app-capable"
-    content="yes"
-  >
+  <link rel="manifest" href="/manifest.webmanifest">
 
-  <meta
-    name="apple-mobile-web-app-status-bar-style"
-    content="black-translucent"
-  >
-
-  <meta
-    name="apple-mobile-web-app-title"
-    content="TWIN"
-  >
-
-  <link
-    rel="manifest"
-    href="/manifest.webmanifest"
-  >
-
-  <title>TWIN</title>
+  <title>MIKLOZ AI — Your Digital Self</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       background: #0b0b0d;
       color: #f7f7f5;
-      font: 16px -apple-system, BlinkMacSystemFont,
-        "SF Pro Text", system-ui, sans-serif;
+      font: 16px -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     }
 
     .app {
       max-width: 430px;
       margin: auto;
       min-height: 100vh;
-      padding:
-        calc(20px + env(safe-area-inset-top))
-        18px
+      padding: calc(20px + env(safe-area-inset-top)) 18px
         calc(90px + env(safe-area-inset-bottom));
     }
 
@@ -62,9 +36,7 @@
       margin-bottom: 30px;
     }
 
-    header b {
-      color: #d7ff55;
-    }
+    header b { color: #d7ff55; }
 
     .hero h1 {
       font-size: 42px;
@@ -97,6 +69,7 @@
       font-weight: 800;
       font-size: 15px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     .secondary {
@@ -104,9 +77,7 @@
       color: white;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none !important; }
 
     .video {
       margin-top: 16px;
@@ -129,6 +100,7 @@
       inset: 15% 18%;
       border: 2px dashed #d7ff55;
       border-radius: 45%;
+      pointer-events: none;
     }
 
     .status {
@@ -138,6 +110,7 @@
       margin: 12px 0;
     }
 
+    input,
     textarea,
     select {
       width: 100%;
@@ -185,10 +158,7 @@
       display: flex;
       background: #0b0b0df2;
       border-top: 1px solid #25252a;
-      padding:
-        10px
-        10px
-        calc(10px + env(safe-area-inset-bottom));
+      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
       gap: 8px;
     }
 
@@ -200,7 +170,19 @@
       padding: 8px;
     }
 
-    .nav .on {
+    .nav .on { color: #d7ff55; }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #202026;
+      font-size: 12px;
+      color: #bbb;
+      margin-bottom: 12px;
+    }
+
+    .ready {
       color: #d7ff55;
     }
   </style>
@@ -208,715 +190,1061 @@
 
 <body>
 
-  <main class="app">
+<main class="app">
 
-    <header>
-      TW<b>IN</b>
-    </header>
+  <header>
+    MIKLOZ <b>AI</b>
+  </header>
 
-    <!-- INICIO -->
+  <!-- LOGIN -->
 
-    <section id="home">
+  <section id="auth">
 
-      <div class="hero">
-        <h1>
-          Tu doble.<br>
-          Tu voz.
-        </h1>
-
-        <p class="muted">
-          Crea contenido con tu identidad digital.
-        </p>
-      </div>
-
-      <div class="card">
-        <b>Crear mi Twin</b>
-
-        <p class="muted">
-          Captura tu rostro y tu voz.
-          La cámara solo se activa cuando tú lo pides.
-        </p>
-
-        <button
-          class="btn"
-          onclick="go('face')"
-        >
-          Empezar
-        </button>
-      </div>
-
-      <div class="card">
-        <b>Studio</b>
-
-        <p class="muted">
-          Crea podcasts, Reels y vídeos
-          utilizando tu identidad digital.
-        </p>
-
-        <button
-          class="btn secondary"
-          onclick="go('studio')"
-        >
-          Abrir Studio
-        </button>
-      </div>
-
-    </section>
-
-
-    <!-- ROSTRO -->
-
-    <section
-      id="face"
-      class="hidden"
-    >
-
-      <h2>Rostro</h2>
+    <div class="hero">
+      <h1>Your<br>Digital Self.</h1>
 
       <p class="muted">
-        Te pediremos permiso antes
-        de activar la cámara.
+        Crea tu identidad digital con tu rostro y tu voz.
+      </p>
+    </div>
+
+    <div class="card">
+      <b>Entrar en MIKLOZ</b>
+
+      <input
+        id="email"
+        type="email"
+        autocomplete="email"
+        placeholder="Tu email"
+      >
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Contraseña"
+      >
+
+      <button class="btn" onclick="login()">
+        Iniciar sesión
+      </button>
+
+      <button class="btn secondary" onclick="register()">
+        Crear cuenta
+      </button>
+
+      <div class="status" id="authStatus"></div>
+    </div>
+
+  </section>
+
+
+  <!-- HOME -->
+
+  <section id="home" class="hidden">
+
+    <div class="badge" id="userBadge">
+      MIKLOZ ID
+    </div>
+
+    <div class="hero">
+      <h1>
+        Tu doble.<br>
+        Tu voz.
+      </h1>
+
+      <p class="muted">
+        Crea contenido con tu identidad digital.
+      </p>
+    </div>
+
+    <div class="card">
+
+      <b>MIKLOZ Twin</b>
+
+      <p class="muted" id="twinStatus">
+        Comprobando tu Twin...
       </p>
 
       <button
         class="btn"
-        id="camBtn"
-        onclick="camera()"
+        id="createTwinButton"
+        onclick="go('face')"
       >
-        Activar cámara
+        Crear mi Twin
       </button>
 
-      <div
-        class="video hidden"
-        id="videoBox"
-      >
+    </div>
 
-        <video
-          id="cam"
-          autoplay
-          muted
-          playsinline
-        ></video>
+    <div class="card">
 
-        <div class="guide"></div>
-
-      </div>
-
-      <div
-        class="status"
-        id="status"
-      ></div>
-
-      <button
-        class="btn secondary hidden"
-        id="nextBtn"
-        onclick="voice()"
-      >
-        Continuar con voz
-      </button>
-
-    </section>
-
-
-    <!-- VOZ -->
-
-    <section
-      id="voice"
-      class="hidden"
-    >
-
-      <h2>Voz</h2>
+      <b>MIKLOZ Studio</b>
 
       <p class="muted">
-        Graba unos segundos utilizando
-        tu tono de voz normal.
+        Crea vídeos utilizando tu identidad digital.
       </p>
 
-      <div class="card">
+      <button
+        class="btn secondary"
+        onclick="go('studio')"
+      >
+        Abrir Studio
+      </button>
 
-        <p>
-          “Esta es mi voz. Quiero que mi Twin
-          hable de forma natural y conserve
-          mi manera de expresarme.”
-        </p>
+    </div>
 
-        <button
-          class="btn"
-          id="micBtn"
-          onclick="mic()"
-        >
-          Grabar voz
-        </button>
-
-        <div
-          class="status"
-          id="micStatus"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- STUDIO -->
-
-    <section
-      id="studio"
-      class="hidden"
+    <button
+      class="btn secondary"
+      onclick="logout()"
     >
+      Cerrar sesión
+    </button>
 
-      <h2>Twin Studio</h2>
+  </section>
 
-      <div class="tabs">
-        <button class="tab on">Podcast</button>
-        <button class="tab">Reel 9:16</button>
-        <button class="tab">Story</button>
-      </div>
 
-      <label for="script">
-        ¿Qué quieres que diga?
-      </label>
+  <!-- ROSTRO -->
 
-      <textarea
-        id="script"
-        placeholder="Hoy quiero hablarte de algo que aprendí..."
-      ></textarea>
+  <section id="face" class="hidden">
 
-      <label>
-        Escena
-      </label>
+    <h2>Crea tu Twin</h2>
 
-      <select>
-        <option>Podcast cálido</option>
-        <option>Estudio minimal</option>
-        <option>Casa natural</option>
-      </select>
+    <p class="muted">
+      Utilizaremos la cámara únicamente con tu permiso.
+      El siguiente paso será grabar el vídeo necesario
+      para crear tu avatar digital.
+    </p>
 
-      <label>
-        Ángulo
-      </label>
+    <button
+      class="btn"
+      id="camBtn"
+      onclick="camera()"
+    >
+      Activar cámara
+    </button>
 
-      <select>
-        <option>Frontal</option>
-        <option>¾ izquierda</option>
-        <option>Lateral</option>
-      </select>
+    <div class="video hidden" id="videoBox">
+
+      <video
+        id="cam"
+        autoplay
+        muted
+        playsinline
+      ></video>
+
+      <div class="guide"></div>
+
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <button
+      class="btn secondary hidden"
+      id="nextBtn"
+      onclick="voice()"
+    >
+      Continuar
+    </button>
+
+  </section>
+
+
+  <!-- VOZ -->
+
+  <section id="voice" class="hidden">
+
+    <h2>Tu voz</h2>
+
+    <p class="muted">
+      Esta grabación prepara el flujo de creación
+      de tu identidad digital.
+    </p>
+
+    <div class="card">
+
+      <p>
+        “Esta es mi voz. Autorizo la creación de mi
+        identidad digital para utilizarla dentro de
+        mi cuenta de MIKLOZ.”
+      </p>
 
       <button
         class="btn"
-        onclick="renderVideo()"
+        id="micBtn"
+        onclick="mic()"
       >
-        Crear vídeo
+        Grabar voz
       </button>
 
-      <div
-        class="status"
-        id="renderStatus"
-      ></div>
+      <div class="status" id="micStatus"></div>
 
-      <div
-        id="resultBox"
-        class="card hidden"
+    </div>
+
+  </section>
+
+
+  <!-- STUDIO -->
+
+  <section id="studio" class="hidden">
+
+    <h2>MIKLOZ Studio</h2>
+
+    <div class="tabs">
+      <button class="tab on">Podcast</button>
+      <button class="tab">Reel 9:16</button>
+      <button class="tab">Story</button>
+    </div>
+
+    <label>¿Qué quieres que diga?</label>
+
+    <textarea
+      id="script"
+      placeholder="Hoy quiero hablarte de algo que aprendí..."
+    ></textarea>
+
+    <label>Escena</label>
+
+    <select>
+      <option>Podcast cálido</option>
+      <option>Estudio minimal</option>
+      <option>Casa natural</option>
+    </select>
+
+    <label>Ángulo</label>
+
+    <select>
+      <option>Frontal</option>
+      <option>¾ izquierda</option>
+      <option>Lateral</option>
+    </select>
+
+    <button class="btn" onclick="renderVideo()">
+      Crear vídeo
+    </button>
+
+    <div class="status" id="renderStatus"></div>
+
+    <div id="resultBox" class="card hidden">
+
+      <b>Tu vídeo</b>
+
+      <video
+        id="resultVideo"
+        controls
+        playsinline
+        style="width:100%;margin-top:12px;border-radius:14px"
+      ></video>
+
+      <a
+        id="resultLink"
+        class="btn secondary"
+        target="_blank"
+        rel="noopener"
+        style="text-align:center;text-decoration:none"
       >
+        Abrir vídeo
+      </a>
 
-        <b>Tu vídeo</b>
+    </div>
 
-        <video
-          id="resultVideo"
-          controls
-          playsinline
-          style="
-            width:100%;
-            margin-top:12px;
-            border-radius:14px;
-          "
-        ></video>
+  </section>
 
-        <a
-          id="resultLink"
-          class="btn secondary"
-          style="
-            text-align:center;
-            text-decoration:none;
-            margin-top:12px;
-          "
-          target="_blank"
-          rel="noopener"
-        >
-          Abrir vídeo
-        </a>
-
-      </div>
-
-    </section>
-
-  </main>
+</main>
 
 
-  <!-- NAVEGACIÓN -->
+<nav class="nav hidden" id="nav">
 
-  <nav class="nav">
+  <button
+    id="nHome"
+    class="on"
+    onclick="go('home')"
+  >
+    Inicio
+  </button>
 
-    <button
-      id="nHome"
-      class="on"
-      onclick="go('home')"
-    >
-      Inicio
-    </button>
+  <button
+    id="nStudio"
+    onclick="go('studio')"
+  >
+    Studio
+  </button>
 
-    <button
-      id="nStudio"
-      onclick="go('studio')"
-    >
-      Studio
-    </button>
-
-  </nav>
+</nav>
 
 
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    let camStream = null;
-    let micStream = null;
-    let recorder = null;
+<script>
 
-    const q = id =>
-      document.getElementById(id);
+  /*
+   * ==================================================
+   * SUPABASE
+   * ==================================================
+   *
+   * Pon aquí los DOS valores de tu proyecto:
+   *
+   * 1. Project URL
+   * 2. anon/public key
+   *
+   * La anon key sí puede utilizarse en frontend
+   * cuando RLS está correctamente configurado.
+   */
+
+  const SUPABASE_URL = 'PEGA_AQUI_TU_SUPABASE_URL';
+  const SUPABASE_ANON_KEY = 'PEGA_AQUI_TU_SUPABASE_ANON_KEY';
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-    // ===============================
-    // DETENER CÁMARA / MICRÓFONO
-    // ===============================
+  let currentUser = null;
+  let currentProfile = null;
 
-    function stopMedia() {
+  let camStream = null;
+  let micStream = null;
+  let recorder = null;
 
-      if (camStream) {
-        camStream
-          .getTracks()
-          .forEach(track => track.stop());
 
-        camStream = null;
-      }
+  const q = id =>
+    document.getElementById(id);
 
-      if (micStream) {
-        micStream
-          .getTracks()
-          .forEach(track => track.stop());
 
-        micStream = null;
+  /*
+   * ==================================================
+   * SESIÓN
+   * ==================================================
+   */
+
+  async function init() {
+
+    const {
+      data: { session }
+    } = await db.auth.getSession();
+
+    if (session?.user) {
+
+      currentUser = session.user;
+
+      await loadProfile();
+
+      showApp();
+
+    } else {
+
+      showAuth();
+    }
+  }
+
+
+  function showAuth() {
+
+    stopMedia();
+
+    ['home', 'face', 'voice', 'studio']
+      .forEach(id => q(id).classList.add('hidden'));
+
+    q('auth').classList.remove('hidden');
+    q('nav').classList.add('hidden');
+  }
+
+
+  function showApp() {
+
+    q('auth').classList.add('hidden');
+    q('nav').classList.remove('hidden');
+
+    q('userBadge').textContent =
+      currentUser?.email || 'MIKLOZ ID';
+
+    go('home');
+
+    updateTwinStatus();
+  }
+
+
+  /*
+   * ==================================================
+   * REGISTRO
+   * ==================================================
+   */
+
+  async function register() {
+
+    const email = q('email').value.trim();
+    const password = q('password').value;
+
+    if (!email || !password) {
+
+      q('authStatus').textContent =
+        'Introduce email y contraseña.';
+
+      return;
+    }
+
+    q('authStatus').textContent =
+      'Creando tu MIKLOZ ID…';
+
+
+    const { data, error } =
+      await db.auth.signUp({
+        email,
+        password
+      });
+
+
+    if (error) {
+
+      q('authStatus').textContent =
+        error.message;
+
+      return;
+    }
+
+
+    if (data.user) {
+
+      const { error: profileError } =
+        await db
+          .from('profiles')
+          .upsert({
+            id: data.user.id
+          });
+
+
+      if (
+        profileError &&
+        data.session
+      ) {
+
+        q('authStatus').textContent =
+          'Cuenta creada, pero no pude crear el perfil: ' +
+          profileError.message;
+
+        return;
       }
     }
 
 
-    // ===============================
-    // NAVEGACIÓN
-    // ===============================
+    if (!data.session) {
 
-    function go(id) {
+      q('authStatus').textContent =
+        'Cuenta creada. Revisa tu email para confirmar tu cuenta.';
 
-      if (id !== 'face') {
-        stopMedia();
-      }
+      return;
+    }
 
-      ['home', 'face', 'voice', 'studio']
-        .forEach(section => {
 
-          q(section).classList.toggle(
-            'hidden',
-            section !== id
-          );
+    currentUser = data.user;
 
+    await loadProfile();
+
+    showApp();
+  }
+
+
+  /*
+   * ==================================================
+   * LOGIN
+   * ==================================================
+   */
+
+  async function login() {
+
+    const email = q('email').value.trim();
+    const password = q('password').value;
+
+    if (!email || !password) {
+
+      q('authStatus').textContent =
+        'Introduce email y contraseña.';
+
+      return;
+    }
+
+
+    q('authStatus').textContent =
+      'Entrando…';
+
+
+    const { data, error } =
+      await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+
+    if (error) {
+
+      q('authStatus').textContent =
+        error.message;
+
+      return;
+    }
+
+
+    currentUser = data.user;
+
+    await ensureProfile();
+    await loadProfile();
+
+    showApp();
+  }
+
+
+  /*
+   * ==================================================
+   * PERFIL
+   * ==================================================
+   */
+
+  async function ensureProfile() {
+
+    if (!currentUser) return;
+
+
+    const { data } =
+      await db
+        .from('profiles')
+        .select('id')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+
+
+    if (!data) {
+
+      await db
+        .from('profiles')
+        .insert({
+          id: currentUser.id
+        });
+    }
+  }
+
+
+  async function loadProfile() {
+
+    if (!currentUser) return;
+
+
+    const { data, error } =
+      await db
+        .from('profiles')
+        .select(
+          'id, avatar_id, voice_id, created_at'
+        )
+        .eq('id', currentUser.id)
+        .maybeSingle();
+
+
+    if (error) {
+
+      console.error(error);
+      currentProfile = null;
+
+      return;
+    }
+
+
+    currentProfile = data;
+  }
+
+
+  function updateTwinStatus() {
+
+    if (
+      currentProfile?.avatar_id &&
+      currentProfile?.voice_id
+    ) {
+
+      q('twinStatus').innerHTML =
+        '<span class="ready">Tu Twin está listo ✓</span>';
+
+      q('createTwinButton').textContent =
+        'Actualizar mi Twin';
+
+    } else {
+
+      q('twinStatus').textContent =
+        'Todavía no has creado tu Twin.';
+
+      q('createTwinButton').textContent =
+        'Crear mi Twin';
+    }
+  }
+
+
+  /*
+   * ==================================================
+   * LOGOUT
+   * ==================================================
+   */
+
+  async function logout() {
+
+    stopMedia();
+
+    await db.auth.signOut();
+
+    currentUser = null;
+    currentProfile = null;
+
+    showAuth();
+  }
+
+
+  /*
+   * ==================================================
+   * NAVEGACIÓN
+   * ==================================================
+   */
+
+  function go(id) {
+
+    if (!currentUser) {
+
+      showAuth();
+      return;
+    }
+
+
+    if (id !== 'face') {
+      stopMedia();
+    }
+
+
+    ['home', 'face', 'voice', 'studio']
+      .forEach(section => {
+
+        q(section).classList.toggle(
+          'hidden',
+          section !== id
+        );
+      });
+
+
+    q('nHome').classList.toggle(
+      'on',
+      id !== 'studio'
+    );
+
+    q('nStudio').classList.toggle(
+      'on',
+      id === 'studio'
+    );
+
+    window.scrollTo(0, 0);
+  }
+
+
+  /*
+   * ==================================================
+   * CÁMARA
+   * ==================================================
+   */
+
+  async function camera() {
+
+    if (!window.isSecureContext) {
+
+      q('status').textContent =
+        'MIKLOZ necesita HTTPS para utilizar la cámara.';
+
+      return;
+    }
+
+
+    try {
+
+      q('status').textContent =
+        'Solicitando permiso…';
+
+
+      camStream =
+        await navigator.mediaDevices.getUserMedia({
+
+          video: {
+            facingMode: 'user',
+            width: { ideal: 720 },
+            height: { ideal: 1280 }
+          },
+
+          audio: true
         });
 
-      q('nHome').classList.toggle(
-        'on',
-        id === 'home' ||
-        id === 'face' ||
-        id === 'voice'
-      );
 
-      q('nStudio').classList.toggle(
-        'on',
-        id === 'studio'
-      );
+      q('cam').srcObject = camStream;
 
-      window.scrollTo(0, 0);
-    }
+      q('videoBox')
+        .classList.remove('hidden');
 
+      q('nextBtn')
+        .classList.remove('hidden');
 
-    // ===============================
-    // CÁMARA
-    // ===============================
-
-    async function camera() {
-
-      if (!window.isSecureContext) {
-        q('status').textContent =
-          'Abre TWIN desde una conexión HTTPS para utilizar la cámara.';
-
-        return;
-      }
-
-      if (!navigator.mediaDevices?.getUserMedia) {
-        q('status').textContent =
-          'Este navegador no permite acceder a la cámara.';
-
-        return;
-      }
-
-      try {
-
-        q('status').textContent =
-          'Solicitando permiso…';
-
-        camStream =
-          await navigator.mediaDevices.getUserMedia({
-
-            video: {
-              facingMode: 'user',
-
-              width: {
-                ideal: 720
-              },
-
-              height: {
-                ideal: 960
-              }
-            },
-
-            audio: false
-          });
-
-        q('cam').srcObject = camStream;
-
-        q('videoBox')
-          .classList.remove('hidden');
-
-        q('nextBtn')
-          .classList.remove('hidden');
-
-        q('camBtn')
-          .classList.add('hidden');
-
-        q('status').textContent =
-          'Cámara lista. Mira al frente y gira suavemente a ambos lados.';
-
-      } catch (error) {
-
-        q('status').textContent =
-          'No pude abrir la cámara. Revisa los permisos del navegador.';
-      }
-    }
-
-
-    // ===============================
-    // VOZ
-    // ===============================
-
-    function voice() {
-      stopMedia();
-      go('voice');
-    }
-
-
-    async function mic() {
-
-      if (
-        recorder &&
-        recorder.state === 'recording'
-      ) {
-        recorder.stop();
-        return;
-      }
-
-      if (!window.isSecureContext) {
-
-        q('micStatus').textContent =
-          'Abre TWIN mediante HTTPS para utilizar el micrófono.';
-
-        return;
-      }
-
-      if (
-        !window.MediaRecorder ||
-        !navigator.mediaDevices?.getUserMedia
-      ) {
-
-        q('micStatus').textContent =
-          'Este navegador no permite realizar esta grabación.';
-
-        return;
-      }
-
-      try {
-
-        micStream =
-          await navigator.mediaDevices.getUserMedia({
-            audio: true
-          });
-
-        recorder =
-          new MediaRecorder(micStream);
-
-        recorder.onstop = () => {
-
-          q('micBtn').textContent =
-            'Voz guardada ✓';
-
-          q('micStatus').textContent =
-            'Captura completada.';
-
-          stopMedia();
-
-          setTimeout(
-            () => go('studio'),
-            400
-          );
-        };
-
-        recorder.start();
-
-        q('micBtn').textContent =
-          'Detener';
-
-        q('micStatus').textContent =
-          'Grabando…';
-
-      } catch (error) {
-
-        q('micStatus').textContent =
-          'No pude abrir el micrófono. Revisa los permisos.';
-      }
-    }
-
-
-    // ===============================
-    // CREAR VÍDEO
-    // ===============================
-
-    async function renderVideo() {
-
-      const script =
-        q('script').value.trim();
-
-      if (!script) {
-
-        q('renderStatus').textContent =
-          'Escribe primero un guion.';
-
-        return;
-      }
-
-      q('renderStatus').textContent =
-        'Creando vídeo…';
-
-      q('resultBox')
+      q('camBtn')
         .classList.add('hidden');
 
-
-      try {
-
-        /*
-         * Próximo paso:
-         * source_url y voice_id vendrán
-         * del Twin autenticado del usuario.
-         */
-
-        const source_url =
-          window.TWIN_SOURCE_URL || null;
-
-        const voice_id =
-          window.TWIN_VOICE_ID || null;
+      q('status').textContent =
+        'Cámara lista. En el siguiente paso grabaremos el vídeo de entrenamiento.';
 
 
-        if (!source_url) {
+    } catch (error) {
+
+      q('status').textContent =
+        'No pude abrir la cámara o el micrófono. Revisa los permisos.';
+    }
+  }
+
+
+  /*
+   * ==================================================
+   * VOZ
+   * ==================================================
+   */
+
+  function voice() {
+
+    stopMedia();
+    go('voice');
+  }
+
+
+  async function mic() {
+
+    if (
+      recorder &&
+      recorder.state === 'recording'
+    ) {
+
+      recorder.stop();
+      return;
+    }
+
+
+    try {
+
+      micStream =
+        await navigator.mediaDevices.getUserMedia({
+          audio: true
+        });
+
+
+      const chunks = [];
+
+      recorder =
+        new MediaRecorder(micStream);
+
+
+      recorder.ondataavailable = event => {
+
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+
+      recorder.onstop = async () => {
+
+        const audioBlob =
+          new Blob(
+            chunks,
+            {
+              type:
+                recorder.mimeType ||
+                'audio/webm'
+            }
+          );
+
+
+        console.log(
+          'Audio capturado:',
+          audioBlob.size,
+          'bytes'
+        );
+
+
+        q('micBtn').textContent =
+          'Voz capturada ✓';
+
+        q('micStatus').textContent =
+          'Captura completada.';
+
+        stopMedia();
+
+        setTimeout(
+          () => go('studio'),
+          500
+        );
+      };
+
+
+      recorder.start();
+
+
+      q('micBtn').textContent =
+        'Detener grabación';
+
+      q('micStatus').textContent =
+        'Grabando…';
+
+
+    } catch (error) {
+
+      q('micStatus').textContent =
+        'No pude abrir el micrófono. Revisa los permisos.';
+    }
+  }
+
+
+  /*
+   * ==================================================
+   * DETENER DISPOSITIVOS
+   * ==================================================
+   */
+
+  function stopMedia() {
+
+    if (camStream) {
+
+      camStream
+        .getTracks()
+        .forEach(track => track.stop());
+
+      camStream = null;
+    }
+
+
+    if (micStream) {
+
+      micStream
+        .getTracks()
+        .forEach(track => track.stop());
+
+      micStream = null;
+    }
+  }
+
+
+  /*
+   * ==================================================
+   * STUDIO
+   * ==================================================
+   */
+
+  async function renderVideo() {
+
+    const script =
+      q('script').value.trim();
+
+
+    if (!script) {
+
+      q('renderStatus').textContent =
+        'Escribe primero un guion.';
+
+      return;
+    }
+
+
+    await loadProfile();
+
+
+    if (!currentProfile?.avatar_id) {
+
+      q('renderStatus').textContent =
+        'Primero necesitas crear tu MIKLOZ Twin.';
+
+      return;
+    }
+
+
+    q('renderStatus').textContent =
+      'Creando vídeo…';
+
+
+    /*
+     * En el siguiente backend conectaremos
+     * avatar_id + voice_id directamente con D-ID.
+     *
+     * No utilizamos un avatar global.
+     */
+
+
+    try {
+
+      const response =
+        await fetch('/api/video', {
+
+          method: 'POST',
+
+          headers: {
+            'Content-Type': 'application/json'
+          },
+
+          body: JSON.stringify({
+            script,
+            avatar_id:
+              currentProfile.avatar_id,
+
+            voice_id:
+              currentProfile.voice_id
+          })
+        });
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          'No se pudo crear el vídeo.'
+        );
+      }
+
+
+      if (data.result_url) {
+
+        showResult(data.result_url);
+        return;
+      }
+
+
+      if (!data.id) {
+
+        throw new Error(
+          'No se recibió el ID del vídeo.'
+        );
+      }
+
+
+      q('renderStatus').textContent =
+        'Procesando tu Twin…';
+
+
+      for (
+        let attempt = 0;
+        attempt < 60;
+        attempt++
+      ) {
+
+        await new Promise(resolve =>
+          setTimeout(resolve, 3000)
+        );
+
+
+        const statusResponse =
+          await fetch(
+            '/api/video?id=' +
+            encodeURIComponent(data.id)
+          );
+
+
+        const status =
+          await statusResponse.json();
+
+
+        if (!statusResponse.ok) {
 
           throw new Error(
-            'Todavía no hay un avatar conectado a este usuario.'
+            status.error ||
+            'Error consultando el vídeo.'
           );
         }
 
 
-        const response =
-          await fetch('/api/video', {
-
-            method: 'POST',
-
-            headers: {
-              'Content-Type':
-                'application/json'
-            },
-
-            body: JSON.stringify({
-              script,
-              source_url,
-              voice_id
-            })
-          });
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.error ||
-            'No se pudo iniciar el vídeo.'
-          );
-        }
-
-
-        // Vídeo terminado inmediatamente
-
-        if (data.result_url) {
+        if (
+          status.status === 'done' &&
+          status.result_url
+        ) {
 
           showResult(
-            data.result_url
+            status.result_url
           );
 
           return;
         }
 
 
-        if (!data.id) {
-
-          throw new Error(
-            'D-ID no devolvió un identificador de vídeo.'
-          );
-        }
-
-
-        q('renderStatus').textContent =
-          'Procesando tu Twin…';
-
-
-        // Consultar estado
-
-        for (
-          let attempt = 0;
-          attempt < 60;
-          attempt++
+        if (
+          status.status === 'error' ||
+          status.status === 'failed'
         ) {
 
-          await new Promise(resolve =>
-            setTimeout(resolve, 3000)
+          throw new Error(
+            'No se pudo generar el vídeo.'
           );
-
-
-          const statusResponse =
-            await fetch(
-              '/api/video?id=' +
-              encodeURIComponent(data.id)
-            );
-
-
-          const status =
-            await statusResponse.json();
-
-
-          if (!statusResponse.ok) {
-
-            throw new Error(
-              status.error ||
-              'Error consultando el vídeo.'
-            );
-          }
-
-
-          if (
-            status.status === 'done' &&
-            status.result_url
-          ) {
-
-            showResult(
-              status.result_url
-            );
-
-            return;
-          }
-
-
-          if (
-            status.status === 'error' ||
-            status.status === 'failed'
-          ) {
-
-            throw new Error(
-              'D-ID no pudo generar el vídeo.'
-            );
-          }
-
-
-          q('renderStatus').textContent =
-            'Procesando… ' +
-            Math.min(
-              95,
-              (attempt + 1) * 2
-            ) +
-            '%';
         }
-
-
-        throw new Error(
-          'El vídeo está tardando más de lo esperado.'
-        );
-
-
-      } catch (error) {
-
-        q('renderStatus').textContent =
-          'Error: ' + error.message;
       }
-    }
 
 
-    // ===============================
-    // MOSTRAR RESULTADO
-    // ===============================
+      throw new Error(
+        'El vídeo está tardando más de lo esperado.'
+      );
 
-    function showResult(url) {
 
-      q('resultVideo').src = url;
-      q('resultLink').href = url;
-
-      q('resultBox')
-        .classList.remove('hidden');
+    } catch (error) {
 
       q('renderStatus').textContent =
-        'Vídeo listo ✓';
+        'Error: ' + error.message;
     }
+  }
 
 
-    // ===============================
-    // TABS
-    // ===============================
+  function showResult(url) {
 
-    document
-      .querySelectorAll('.tab')
-      .forEach(button => {
+    q('resultVideo').src = url;
+    q('resultLink').href = url;
 
-        button.onclick = () => {
+    q('resultBox')
+      .classList.remove('hidden');
 
-          document
-            .querySelectorAll('.tab')
-            .forEach(tab =>
-              tab.classList.remove('on')
-            );
-
-          button.classList.add('on');
-        };
-      });
+    q('renderStatus').textContent =
+      'Vídeo listo ✓';
+  }
 
 
-    window.addEventListener(
-      'pagehide',
-      stopMedia
-    );
+  /*
+   * ==================================================
+   * TABS
+   * ==================================================
+   */
 
-  </script>
+  document
+    .querySelectorAll('.tab')
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        document
+          .querySelectorAll('.tab')
+          .forEach(tab =>
+            tab.classList.remove('on')
+          );
+
+        button.classList.add('on');
+      };
+    });
+
+
+  window.addEventListener(
+    'pagehide',
+    stopMedia
+  );
+
+
+  /*
+   * ==================================================
+   * INICIAR MIKLOZ
+   * ==================================================
+   */
+
+  init();
+
+</script>
 
 </body>
 </html>
