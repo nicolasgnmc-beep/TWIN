@@ -10,19 +10,13 @@ function authHeader() {
   return `Basic ${Buffer.from(key).toString('base64')}`;
 }
 
-function headers() {
-  return {
-    Authorization: authHeader(),
-    'Content-Type': 'application/json',
-    Accept: 'application/json'
-  };
-}
-
 async function didRequest(path, options = {}) {
   const response = await fetch(`${DID_BASE}${path}`, {
     ...options,
     headers: {
-      ...headers(),
+      Authorization: authHeader(),
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
       ...(options.headers || {})
     }
   });
@@ -58,184 +52,112 @@ async function didRequest(path, options = {}) {
 export default async function handler(req, res) {
   try {
 
-    /*
-     * =========================================
-     * POST
-     * =========================================
-     *
-     * action:
-     * - create_consent
-     * - verify_consent
-     * - create_avatar
-     */
+    // ==========================================
+    // POST — CREAR VÍDEO CON EL TWIN
+    // ==========================================
 
     if (req.method === 'POST') {
+
       const {
-        action,
-        consent_id,
-        source_url,
-        name
+        script,
+        avatar_id,
+        voice_id
       } = req.body || {};
 
 
-      /*
-       * -----------------------------------------
-       * 1. CREAR CONSENTIMIENTO
-       * -----------------------------------------
-       */
+      if (!script || typeof script !== 'string') {
+        return res.status(400).json({
+          error: 'Falta el guion.'
+        });
+      }
 
-      if (action === 'create_consent') {
 
-        const data = await didRequest('/consents', {
+      if (!avatar_id || typeof avatar_id !== 'string') {
+        return res.status(400).json({
+          error: 'Falta avatar_id del usuario.'
+        });
+      }
+
+
+      const sceneBody = {
+        avatar_id,
+
+        script: {
+          type: 'text',
+          input: script
+        }
+      };
+
+
+      // Si el avatar tiene una voz asociada,
+      // utilizamos esa voz.
+
+      if (voice_id) {
+        sceneBody.script.provider = {
+          type: 'microsoft',
+          voice_id
+        };
+      }
+
+
+      const data = await didRequest(
+        '/scenes',
+        {
           method: 'POST',
-
-          body: JSON.stringify({
-            language: 'spanish'
-          })
-        });
-
-        return res.status(201).json({
-          consent_id: data.id,
-          text: data.text,
-          status: data.status || 'created',
-          raw: data
-        });
-      }
-
-
-      /*
-       * -----------------------------------------
-       * 2. VERIFICAR VÍDEO DE CONSENTIMIENTO
-       * -----------------------------------------
-       */
-
-      if (action === 'verify_consent') {
-
-        if (!consent_id) {
-          return res.status(400).json({
-            error: 'Falta consent_id.'
-          });
+          body: JSON.stringify(sceneBody)
         }
-
-        if (!source_url) {
-          return res.status(400).json({
-            error:
-              'Falta source_url del vídeo de consentimiento.'
-          });
-        }
-
-        if (!name) {
-          return res.status(400).json({
-            error: 'Falta el nombre del usuario.'
-          });
-        }
-
-        const data = await didRequest(
-          `/consents/${encodeURIComponent(consent_id)}`,
-          {
-            method: 'POST',
-
-            body: JSON.stringify({
-              name,
-              source_url
-            })
-          }
-        );
-
-        return res.status(200).json(data);
-      }
+      );
 
 
-      /*
-       * -----------------------------------------
-       * 3. CREAR AVATAR
-       * -----------------------------------------
-       */
-
-      if (action === 'create_avatar') {
-
-        if (!consent_id) {
-          return res.status(400).json({
-            error: 'Falta consent_id.'
-          });
-        }
-
-        if (!source_url) {
-          return res.status(400).json({
-            error:
-              'Falta source_url del vídeo de entrenamiento.'
-          });
-        }
-
-        const data = await didRequest(
-          '/scenes/avatars',
-          {
-            method: 'POST',
-
-            body: JSON.stringify({
-              name: name || 'MIKLOZ Twin',
-              consent_id,
-              source_url,
-              persist: true
-            })
-          }
-        );
-
-        return res.status(201).json({
-          avatar_id: data.id,
-          status: data.status,
-          raw: data
-        });
-      }
-
-
-      return res.status(400).json({
-        error: 'Acción no válida.'
+      return res.status(201).json({
+        id: data.id,
+        status: data.status,
+        result_url: data.result_url || null
       });
     }
 
 
-    /*
-     * =========================================
-     * GET — CONSULTAR AVATAR
-     * =========================================
-     */
+    // ==========================================
+    // GET — CONSULTAR ESTADO DEL VÍDEO
+    // ==========================================
 
     if (req.method === 'GET') {
 
-      const { avatar_id } = req.query || {};
+      const { id } = req.query || {};
 
-      if (!avatar_id) {
+
+      if (!id) {
         return res.status(400).json({
-          error: 'Falta avatar_id.'
+          error: 'Falta id.'
         });
       }
 
+
       const data = await didRequest(
-        `/scenes/avatars/${encodeURIComponent(avatar_id)}`,
+        `/scenes/${encodeURIComponent(id)}`,
         {
           method: 'GET'
         }
       );
 
+
       return res.status(200).json({
-        avatar_id: data.id,
+        id: data.id,
         status: data.status,
-        voice_id: data.voice_id || null,
-        thumbnail_url:
-          data.thumbnail_url || null,
-        raw: data
+        result_url: data.result_url || null
       });
     }
 
 
-    /*
-     * =========================================
-     * MÉTODO NO PERMITIDO
-     * =========================================
-     */
+    // ==========================================
+    // MÉTODO NO PERMITIDO
+    // ==========================================
 
-    res.setHeader('Allow', ['GET', 'POST']);
+    res.setHeader(
+      'Allow',
+      ['GET', 'POST']
+    );
+
 
     return res.status(405).json({
       error: 'Método no permitido.'
@@ -245,9 +167,10 @@ export default async function handler(req, res) {
   } catch (error) {
 
     console.error(
-      'MIKLOZ Avatar API:',
+      'MIKLOZ Video API:',
       error
     );
+
 
     return res
       .status(error.status || 500)
@@ -255,6 +178,7 @@ export default async function handler(req, res) {
         error:
           error.message ||
           'Error interno.',
+
         details:
           error.details || null
       });
