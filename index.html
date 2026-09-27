@@ -1135,7 +1135,7 @@ async function uploadVideo(
   } =
     await db
       .storage
-      .from('raw-videos')
+      .from('RAW-VIDEOS')
       .createSignedUrl(
         path,
         3600
