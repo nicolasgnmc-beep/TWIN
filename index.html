@@ -4,11 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0d">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MIKLOZ">
-
-  <link rel="manifest" href="/manifest.webmanifest">
 
   <title>MIKLOZ AI — Your Digital Self</title>
 
@@ -26,8 +21,7 @@
       max-width: 430px;
       margin: auto;
       min-height: 100vh;
-      padding: calc(20px + env(safe-area-inset-top)) 18px
-        calc(90px + env(safe-area-inset-bottom));
+      padding: 24px 18px 100px;
     }
 
     header {
@@ -38,7 +32,7 @@
 
     header b { color: #d7ff55; }
 
-    .hero h1 {
+    h1 {
       font-size: 42px;
       line-height: .95;
       letter-spacing: -2px;
@@ -64,12 +58,12 @@
       border: 0;
       border-radius: 14px;
       padding: 15px;
+      margin-top: 10px;
       background: #d7ff55;
       color: #0b0b0d;
       font-weight: 800;
       font-size: 15px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
     .secondary {
@@ -77,7 +71,34 @@
       color: white;
     }
 
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #303038;
+      background: #0e0e11;
+      color: white;
+      border-radius: 13px;
+      padding: 13px;
+      font: inherit;
+      margin: 7px 0 14px;
+    }
+
+    textarea {
+      height: 130px;
+      resize: none;
+    }
+
+    .status {
+      min-height: 35px;
+      color: #b9b9c2;
+      font-size: 13px;
+      margin: 12px 0;
+    }
 
     .video {
       margin-top: 16px;
@@ -103,49 +124,17 @@
       pointer-events: none;
     }
 
-    .status {
-      min-height: 38px;
-      color: #b9b9c2;
-      font-size: 13px;
-      margin: 12px 0;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid #303038;
-      background: #0e0e11;
-      color: #fff;
-      border-radius: 13px;
-      padding: 13px;
-      font: inherit;
-      margin: 7px 0 14px;
-    }
-
-    textarea {
-      height: 130px;
-      resize: none;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      overflow: auto;
-      margin: 12px 0 18px;
-    }
-
-    .tab {
-      white-space: nowrap;
-      border: 1px solid #303038;
-      background: #151519;
-      color: #ddd;
+    .badge {
+      display: inline-block;
+      background: #202026;
       border-radius: 999px;
-      padding: 9px 12px;
+      padding: 7px 10px;
+      color: #bbb;
+      font-size: 12px;
+      margin-bottom: 15px;
     }
 
-    .tab.on {
-      border-color: #d7ff55;
+    .ready {
       color: #d7ff55;
     }
 
@@ -158,7 +147,7 @@
       display: flex;
       background: #0b0b0df2;
       border-top: 1px solid #25252a;
-      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      padding: 10px;
       gap: 8px;
     }
 
@@ -167,22 +156,10 @@
       border: 0;
       background: none;
       color: #999;
-      padding: 8px;
+      padding: 10px;
     }
 
-    .nav .on { color: #d7ff55; }
-
-    .badge {
-      display: inline-block;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #202026;
-      font-size: 12px;
-      color: #bbb;
-      margin-bottom: 12px;
-    }
-
-    .ready {
+    .nav .on {
       color: #d7ff55;
     }
   </style>
@@ -192,37 +169,34 @@
 
 <main class="app">
 
-  <header>
-    MIKLOZ <b>AI</b>
-  </header>
+  <header>MIKLOZ <b>AI</b></header>
 
   <!-- LOGIN -->
 
   <section id="auth">
 
-    <div class="hero">
-      <h1>Your<br>Digital Self.</h1>
+    <h1>Your<br>Digital Self.</h1>
 
-      <p class="muted">
-        Crea tu identidad digital con tu rostro y tu voz.
-      </p>
-    </div>
+    <p class="muted">
+      Crea tu identidad digital con tu rostro y tu voz.
+    </p>
 
     <div class="card">
-      <b>Entrar en MIKLOZ</b>
+
+      <b>MIKLOZ ID</b>
 
       <input
         id="email"
         type="email"
+        placeholder="Email"
         autocomplete="email"
-        placeholder="Tu email"
       >
 
       <input
         id="password"
         type="password"
-        autocomplete="current-password"
         placeholder="Contraseña"
+        autocomplete="current-password"
       >
 
       <button class="btn" onclick="login()">
@@ -233,7 +207,8 @@
         Crear cuenta
       </button>
 
-      <div class="status" id="authStatus"></div>
+      <div id="authStatus" class="status"></div>
+
     </div>
 
   </section>
@@ -243,38 +218,37 @@
 
   <section id="home" class="hidden">
 
-    <div class="badge" id="userBadge">
+    <div id="userBadge" class="badge">
       MIKLOZ ID
     </div>
 
-    <div class="hero">
-      <h1>
-        Tu doble.<br>
-        Tu voz.
-      </h1>
+    <h1>
+      Tu doble.<br>
+      Tu voz.
+    </h1>
 
-      <p class="muted">
-        Crea contenido con tu identidad digital.
-      </p>
-    </div>
+    <p class="muted">
+      Tu identidad digital para crear contenido.
+    </p>
 
     <div class="card">
 
       <b>MIKLOZ Twin</b>
 
-      <p class="muted" id="twinStatus">
+      <p id="twinStatus" class="muted">
         Comprobando tu Twin...
       </p>
 
       <button
-        class="btn"
         id="createTwinButton"
+        class="btn"
         onclick="go('face')"
       >
         Crear mi Twin
       </button>
 
     </div>
+
 
     <div class="card">
 
@@ -303,27 +277,25 @@
   </section>
 
 
-  <!-- ROSTRO -->
+  <!-- TWIN -->
 
   <section id="face" class="hidden">
 
     <h2>Crea tu Twin</h2>
 
     <p class="muted">
-      Utilizaremos la cámara únicamente con tu permiso.
-      El siguiente paso será grabar el vídeo necesario
-      para crear tu avatar digital.
+      Activa la cámara para comenzar la captura de tu identidad digital.
     </p>
 
     <button
-      class="btn"
       id="camBtn"
+      class="btn"
       onclick="camera()"
     >
       Activar cámara
     </button>
 
-    <div class="video hidden" id="videoBox">
+    <div id="videoBox" class="video hidden">
 
       <video
         id="cam"
@@ -336,12 +308,12 @@
 
     </div>
 
-    <div class="status" id="status"></div>
+    <div id="cameraStatus" class="status"></div>
 
     <button
-      class="btn secondary hidden"
       id="nextBtn"
-      onclick="voice()"
+      class="btn secondary hidden"
+      onclick="go('voice')"
     >
       Continuar
     </button>
@@ -356,27 +328,33 @@
     <h2>Tu voz</h2>
 
     <p class="muted">
-      Esta grabación prepara el flujo de creación
-      de tu identidad digital.
+      Graba tu voz para preparar tu identidad digital.
     </p>
 
     <div class="card">
 
       <p>
-        “Esta es mi voz. Autorizo la creación de mi
-        identidad digital para utilizarla dentro de
-        mi cuenta de MIKLOZ.”
+        “Esta es mi voz. Autorizo la creación de mi identidad
+        digital dentro de mi cuenta de MIKLOZ.”
       </p>
 
       <button
-        class="btn"
         id="micBtn"
-        onclick="mic()"
+        class="btn"
+        onclick="recordVoice()"
       >
         Grabar voz
       </button>
 
-      <div class="status" id="micStatus"></div>
+      <div id="voiceStatus" class="status"></div>
+
+      <button
+        id="studioAfterVoice"
+        class="btn secondary hidden"
+        onclick="go('studio')"
+      >
+        Continuar a Studio
+      </button>
 
     </div>
 
@@ -389,40 +367,29 @@
 
     <h2>MIKLOZ Studio</h2>
 
-    <div class="tabs">
-      <button class="tab on">Podcast</button>
-      <button class="tab">Reel 9:16</button>
-      <button class="tab">Story</button>
-    </div>
-
     <label>¿Qué quieres que diga?</label>
 
     <textarea
       id="script"
-      placeholder="Hoy quiero hablarte de algo que aprendí..."
+      placeholder="Hoy quiero hablarte de..."
     ></textarea>
 
-    <label>Escena</label>
+    <label>Formato</label>
 
     <select>
-      <option>Podcast cálido</option>
-      <option>Estudio minimal</option>
-      <option>Casa natural</option>
+      <option>Reel 9:16</option>
+      <option>Podcast</option>
+      <option>Story</option>
     </select>
 
-    <label>Ángulo</label>
-
-    <select>
-      <option>Frontal</option>
-      <option>¾ izquierda</option>
-      <option>Lateral</option>
-    </select>
-
-    <button class="btn" onclick="renderVideo()">
+    <button
+      class="btn"
+      onclick="renderVideo()"
+    >
       Crear vídeo
     </button>
 
-    <div class="status" id="renderStatus"></div>
+    <div id="renderStatus" class="status"></div>
 
     <div id="resultBox" class="card hidden">
 
@@ -435,16 +402,6 @@
         style="width:100%;margin-top:12px;border-radius:14px"
       ></video>
 
-      <a
-        id="resultLink"
-        class="btn secondary"
-        target="_blank"
-        rel="noopener"
-        style="text-align:center;text-decoration:none"
-      >
-        Abrir vídeo
-      </a>
-
     </div>
 
   </section>
@@ -452,7 +409,7 @@
 </main>
 
 
-<nav class="nav hidden" id="nav">
+<nav id="nav" class="nav hidden">
 
   <button
     id="nHome"
@@ -476,22 +433,15 @@
 
 <script>
 
-  /*
-   * ==================================================
-   * SUPABASE
-   * ==================================================
-   *
-   * Pon aquí los DOS valores de tu proyecto:
-   *
-   * 1. Project URL
-   * 2. anon/public key
-   *
-   * La anon key sí puede utilizarse en frontend
-   * cuando RLS está correctamente configurado.
-   */
+  /* ================================
+     SUPABASE
+     ================================ */
 
-  const SUPABASE_URL = 'PEGA_AQUI_TU_SUPABASE_URL';
-  const SUPABASE_ANON_KEY = 'PEGA_AQUI_TU_SUPABASE_ANON_KEY';
+  const SUPABASE_URL =
+    'https://nkkckhgsokshmgxxcqck.supabase.co';
+
+  const SUPABASE_ANON_KEY =
+    'sb_publishable_b0s4HLHt5hzd4KfmofYfCA_xVsm3vqt';
 
   const db = window.supabase.createClient(
     SUPABASE_URL,
@@ -506,82 +456,65 @@
   let micStream = null;
   let recorder = null;
 
-
   const q = id =>
     document.getElementById(id);
 
 
-  /*
-   * ==================================================
-   * SESIÓN
-   * ==================================================
-   */
+  /* ================================
+     INICIAR
+     ================================ */
 
   async function init() {
 
-    const {
-      data: { session }
-    } = await db.auth.getSession();
+    try {
 
-    if (session?.user) {
+      const {
+        data: { session }
+      } = await db.auth.getSession();
 
-      currentUser = session.user;
 
-      await loadProfile();
+      if (session?.user) {
 
-      showApp();
+        currentUser = session.user;
 
-    } else {
+        await ensureProfile();
+        await loadProfile();
 
-      showAuth();
+        showApp();
+
+      } else {
+
+        showAuth();
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      q('authStatus').textContent =
+        'No se pudo conectar con MIKLOZ.';
     }
   }
 
 
-  function showAuth() {
-
-    stopMedia();
-
-    ['home', 'face', 'voice', 'studio']
-      .forEach(id => q(id).classList.add('hidden'));
-
-    q('auth').classList.remove('hidden');
-    q('nav').classList.add('hidden');
-  }
-
-
-  function showApp() {
-
-    q('auth').classList.add('hidden');
-    q('nav').classList.remove('hidden');
-
-    q('userBadge').textContent =
-      currentUser?.email || 'MIKLOZ ID';
-
-    go('home');
-
-    updateTwinStatus();
-  }
-
-
-  /*
-   * ==================================================
-   * REGISTRO
-   * ==================================================
-   */
+  /* ================================
+     REGISTRO
+     ================================ */
 
   async function register() {
 
     const email = q('email').value.trim();
     const password = q('password').value;
 
+
     if (!email || !password) {
 
       q('authStatus').textContent =
-        'Introduce email y contraseña.';
+        'Introduce tu email y contraseña.';
 
       return;
     }
+
 
     q('authStatus').textContent =
       'Creando tu MIKLOZ ID…';
@@ -603,30 +536,6 @@
     }
 
 
-    if (data.user) {
-
-      const { error: profileError } =
-        await db
-          .from('profiles')
-          .upsert({
-            id: data.user.id
-          });
-
-
-      if (
-        profileError &&
-        data.session
-      ) {
-
-        q('authStatus').textContent =
-          'Cuenta creada, pero no pude crear el perfil: ' +
-          profileError.message;
-
-        return;
-      }
-    }
-
-
     if (!data.session) {
 
       q('authStatus').textContent =
@@ -638,27 +547,27 @@
 
     currentUser = data.user;
 
+    await ensureProfile();
     await loadProfile();
 
     showApp();
   }
 
 
-  /*
-   * ==================================================
-   * LOGIN
-   * ==================================================
-   */
+  /* ================================
+     LOGIN
+     ================================ */
 
   async function login() {
 
     const email = q('email').value.trim();
     const password = q('password').value;
 
+
     if (!email || !password) {
 
       q('authStatus').textContent =
-        'Introduce email y contraseña.';
+        'Introduce tu email y contraseña.';
 
       return;
     }
@@ -693,18 +602,16 @@
   }
 
 
-  /*
-   * ==================================================
-   * PERFIL
-   * ==================================================
-   */
+  /* ================================
+     PERFIL
+     ================================ */
 
   async function ensureProfile() {
 
     if (!currentUser) return;
 
 
-    const { data } =
+    const { data, error } =
       await db
         .from('profiles')
         .select('id')
@@ -712,13 +619,34 @@
         .maybeSingle();
 
 
+    if (error) {
+
+      console.error(
+        'Error comprobando perfil:',
+        error
+      );
+
+      return;
+    }
+
+
     if (!data) {
 
-      await db
-        .from('profiles')
-        .insert({
-          id: currentUser.id
-        });
+      const { error: insertError } =
+        await db
+          .from('profiles')
+          .insert({
+            id: currentUser.id
+          });
+
+
+      if (insertError) {
+
+        console.error(
+          'Error creando perfil:',
+          insertError
+        );
+      }
     }
   }
 
@@ -740,7 +668,11 @@
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        'Error cargando perfil:',
+        error
+      );
+
       currentProfile = null;
 
       return;
@@ -751,54 +683,37 @@
   }
 
 
-  function updateTwinStatus() {
+  /* ================================
+     PANTALLAS
+     ================================ */
 
-    if (
-      currentProfile?.avatar_id &&
-      currentProfile?.voice_id
-    ) {
-
-      q('twinStatus').innerHTML =
-        '<span class="ready">Tu Twin está listo ✓</span>';
-
-      q('createTwinButton').textContent =
-        'Actualizar mi Twin';
-
-    } else {
-
-      q('twinStatus').textContent =
-        'Todavía no has creado tu Twin.';
-
-      q('createTwinButton').textContent =
-        'Crear mi Twin';
-    }
-  }
-
-
-  /*
-   * ==================================================
-   * LOGOUT
-   * ==================================================
-   */
-
-  async function logout() {
+  function showAuth() {
 
     stopMedia();
 
-    await db.auth.signOut();
+    ['home', 'face', 'voice', 'studio']
+      .forEach(id =>
+        q(id).classList.add('hidden')
+      );
 
-    currentUser = null;
-    currentProfile = null;
-
-    showAuth();
+    q('auth').classList.remove('hidden');
+    q('nav').classList.add('hidden');
   }
 
 
-  /*
-   * ==================================================
-   * NAVEGACIÓN
-   * ==================================================
-   */
+  function showApp() {
+
+    q('auth').classList.add('hidden');
+    q('nav').classList.remove('hidden');
+
+    q('userBadge').textContent =
+      currentUser?.email || 'MIKLOZ ID';
+
+    updateTwinStatus();
+
+    go('home');
+  }
+
 
   function go(id) {
 
@@ -838,18 +753,43 @@
   }
 
 
-  /*
-   * ==================================================
-   * CÁMARA
-   * ==================================================
-   */
+  function updateTwinStatus() {
+
+    if (
+      currentProfile?.avatar_id &&
+      currentProfile?.voice_id
+    ) {
+
+      q('twinStatus').innerHTML =
+        '<span class="ready">Tu Twin está listo ✓</span>';
+
+      q('createTwinButton').textContent =
+        'Actualizar mi Twin';
+
+    } else {
+
+      q('twinStatus').textContent =
+        'Todavía no has creado tu Twin.';
+
+      q('createTwinButton').textContent =
+        'Crear mi Twin';
+    }
+  }
+
+
+  /* ================================
+     CÁMARA
+     ================================ */
 
   async function camera() {
 
-    if (!window.isSecureContext) {
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
 
-      q('status').textContent =
-        'MIKLOZ necesita HTTPS para utilizar la cámara.';
+      q('cameraStatus').textContent =
+        'Este dispositivo no permite acceder a la cámara.';
 
       return;
     }
@@ -857,7 +797,7 @@
 
     try {
 
-      q('status').textContent =
+      q('cameraStatus').textContent =
         'Solicitando permiso…';
 
 
@@ -874,43 +814,41 @@
         });
 
 
-      q('cam').srcObject = camStream;
+      q('cam').srcObject =
+        camStream;
+
 
       q('videoBox')
         .classList.remove('hidden');
 
+
       q('nextBtn')
         .classList.remove('hidden');
+
 
       q('camBtn')
         .classList.add('hidden');
 
-      q('status').textContent =
-        'Cámara lista. En el siguiente paso grabaremos el vídeo de entrenamiento.';
+
+      q('cameraStatus').textContent =
+        'Cámara lista ✓';
 
 
     } catch (error) {
 
-      q('status').textContent =
-        'No pude abrir la cámara o el micrófono. Revisa los permisos.';
+      console.error(error);
+
+      q('cameraStatus').textContent =
+        'No pude acceder a la cámara. Revisa los permisos.';
     }
   }
 
 
-  /*
-   * ==================================================
-   * VOZ
-   * ==================================================
-   */
+  /* ================================
+     VOZ
+     ================================ */
 
-  function voice() {
-
-    stopMedia();
-    go('voice');
-  }
-
-
-  async function mic() {
+  async function recordVoice() {
 
     if (
       recorder &&
@@ -932,51 +870,55 @@
 
       const chunks = [];
 
+
       recorder =
         new MediaRecorder(micStream);
 
 
-      recorder.ondataavailable = event => {
+      recorder.ondataavailable =
+        event => {
 
-        if (event.data.size > 0) {
-          chunks.push(event.data);
-        }
-      };
+          if (event.data.size > 0) {
+            chunks.push(event.data);
+          }
+        };
 
 
-      recorder.onstop = async () => {
+      recorder.onstop =
+        async () => {
 
-        const audioBlob =
-          new Blob(
-            chunks,
-            {
-              type:
-                recorder.mimeType ||
-                'audio/webm'
-            }
+          const audioBlob =
+            new Blob(
+              chunks,
+              {
+                type:
+                  recorder.mimeType ||
+                  'audio/webm'
+              }
+            );
+
+
+          console.log(
+            'Audio capturado:',
+            audioBlob.size,
+            'bytes'
           );
 
 
-        console.log(
-          'Audio capturado:',
-          audioBlob.size,
-          'bytes'
-        );
+          q('micBtn').textContent =
+            'Voz capturada ✓';
 
 
-        q('micBtn').textContent =
-          'Voz capturada ✓';
+          q('voiceStatus').textContent =
+            'Grabación completada.';
 
-        q('micStatus').textContent =
-          'Captura completada.';
 
-        stopMedia();
+          q('studioAfterVoice')
+            .classList.remove('hidden');
 
-        setTimeout(
-          () => go('studio'),
-          500
-        );
-      };
+
+          stopMedia();
+        };
 
 
       recorder.start();
@@ -985,52 +927,24 @@
       q('micBtn').textContent =
         'Detener grabación';
 
-      q('micStatus').textContent =
+
+      q('voiceStatus').textContent =
         'Grabando…';
 
 
     } catch (error) {
 
-      q('micStatus').textContent =
-        'No pude abrir el micrófono. Revisa los permisos.';
+      console.error(error);
+
+      q('voiceStatus').textContent =
+        'No pude acceder al micrófono.';
     }
   }
 
 
-  /*
-   * ==================================================
-   * DETENER DISPOSITIVOS
-   * ==================================================
-   */
-
-  function stopMedia() {
-
-    if (camStream) {
-
-      camStream
-        .getTracks()
-        .forEach(track => track.stop());
-
-      camStream = null;
-    }
-
-
-    if (micStream) {
-
-      micStream
-        .getTracks()
-        .forEach(track => track.stop());
-
-      micStream = null;
-    }
-  }
-
-
-  /*
-   * ==================================================
-   * STUDIO
-   * ==================================================
-   */
+  /* ================================
+     STUDIO
+     ================================ */
 
   async function renderVideo() {
 
@@ -1063,14 +977,6 @@
       'Creando vídeo…';
 
 
-    /*
-     * En el siguiente backend conectaremos
-     * avatar_id + voice_id directamente con D-ID.
-     *
-     * No utilizamos un avatar global.
-     */
-
-
     try {
 
       const response =
@@ -1079,11 +985,14 @@
           method: 'POST',
 
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type':
+              'application/json'
           },
 
           body: JSON.stringify({
+
             script,
+
             avatar_id:
               currentProfile.avatar_id,
 
@@ -1108,7 +1017,10 @@
 
       if (data.result_url) {
 
-        showResult(data.result_url);
+        showResult(
+          data.result_url
+        );
+
         return;
       }
 
@@ -1116,7 +1028,7 @@
       if (!data.id) {
 
         throw new Error(
-          'No se recibió el ID del vídeo.'
+          'No se recibió el identificador del vídeo.'
         );
       }
 
@@ -1131,8 +1043,9 @@
         attempt++
       ) {
 
-        await new Promise(resolve =>
-          setTimeout(resolve, 3000)
+        await new Promise(
+          resolve =>
+            setTimeout(resolve, 3000)
         );
 
 
@@ -1188,6 +1101,8 @@
 
     } catch (error) {
 
+      console.error(error);
+
       q('renderStatus').textContent =
         'Error: ' + error.message;
     }
@@ -1196,38 +1111,65 @@
 
   function showResult(url) {
 
-    q('resultVideo').src = url;
-    q('resultLink').href = url;
+    q('resultVideo').src =
+      url;
+
 
     q('resultBox')
       .classList.remove('hidden');
+
 
     q('renderStatus').textContent =
       'Vídeo listo ✓';
   }
 
 
-  /*
-   * ==================================================
-   * TABS
-   * ==================================================
-   */
+  /* ================================
+     CERRAR SESIÓN
+     ================================ */
 
-  document
-    .querySelectorAll('.tab')
-    .forEach(button => {
+  async function logout() {
 
-      button.onclick = () => {
+    stopMedia();
 
-        document
-          .querySelectorAll('.tab')
-          .forEach(tab =>
-            tab.classList.remove('on')
-          );
+    await db.auth.signOut();
 
-        button.classList.add('on');
-      };
-    });
+    currentUser = null;
+    currentProfile = null;
+
+    showAuth();
+  }
+
+
+  /* ================================
+     CERRAR CÁMARA / MICRO
+     ================================ */
+
+  function stopMedia() {
+
+    if (camStream) {
+
+      camStream
+        .getTracks()
+        .forEach(track =>
+          track.stop()
+        );
+
+      camStream = null;
+    }
+
+
+    if (micStream) {
+
+      micStream
+        .getTracks()
+        .forEach(track =>
+          track.stop()
+        );
+
+      micStream = null;
+    }
+  }
 
 
   window.addEventListener(
@@ -1236,11 +1178,9 @@
   );
 
 
-  /*
-   * ==================================================
-   * INICIAR MIKLOZ
-   * ==================================================
-   */
+  /* ================================
+     ARRANCAR MIKLOZ
+     ================================ */
 
   init();
 
