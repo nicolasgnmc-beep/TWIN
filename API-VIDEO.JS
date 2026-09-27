@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const headers = { Authorization: authHeader(), 'Content-Type': 'application/json' };
 
     if (req.method === 'POST') {
-      const { script } = req.body || {};
+      const script, source_url y voice_id = req.body o vacío. || {};
       if (!script || typeof script !== 'string') {
         return res.status(400).json({ error: 'Falta el guion.' });
       }
