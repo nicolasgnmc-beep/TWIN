@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#0b0b0d">
+
+  <meta
+    name="apple-mobile-web-app-capable"
+    content="yes"
+  >
+
+  <meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent"
+  >
+
+  <meta
+    name="apple-mobile-web-app-title"
+    content="TWIN"
+  >
+
+  <link
+    rel="manifest"
+    href="/manifest.webmanifest"
+  >
+
+  <title>TWIN</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #0b0b0d;
+      color: #f7f7f5;
+      font: 16px -apple-system, BlinkMacSystemFont,
+        "SF Pro Text", system-ui, sans-serif;
+    }
+
+    .app {
+      max-width: 430px;
+      margin: auto;
+      min-height: 100vh;
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        18px
+        calc(90px + env(safe-area-inset-bottom));
+    }
+
+    header {
+      font-size: 24px;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+
+    header b {
+      color: #d7ff55;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      line-height: .95;
+      letter-spacing: -2px;
+      margin: 0 0 14px;
+    }
+
+    .muted {
+      color: #9999a5;
+      line-height: 1.45;
+    }
+
+    .card {
+      background: #151519;
+      border: 1px solid #292930;
+      border-radius: 20px;
+      padding: 17px;
+      margin: 16px 0;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 15px;
+      background: #d7ff55;
+      color: #0b0b0d;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .secondary {
+      background: #25252b;
+      color: white;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .video {
+      margin-top: 16px;
+      aspect-ratio: 3 / 4;
+      background: #050505;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .guide {
+      position: absolute;
+      inset: 15% 18%;
+      border: 2px dashed #d7ff55;
+      border-radius: 45%;
+    }
+
+    .status {
+      min-height: 38px;
+      color: #b9b9c2;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #303038;
+      background: #0e0e11;
+      color: #fff;
+      border-radius: 13px;
+      padding: 13px;
+      font: inherit;
+      margin: 7px 0 14px;
+    }
+
+    textarea {
+      height: 130px;
+      resize: none;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow: auto;
+      margin: 12px 0 18px;
+    }
+
+    .tab {
+      white-space: nowrap;
+      border: 1px solid #303038;
+      background: #151519;
+      color: #ddd;
+      border-radius: 999px;
+      padding: 9px 12px;
+    }
+
+    .tab.on {
+      border-color: #d7ff55;
+      color: #d7ff55;
+    }
+
+    .nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(430px, 100%);
+      display: flex;
+      background: #0b0b0df2;
+      border-top: 1px solid #25252a;
+      padding:
+        10px
+        10px
+        calc(10px + env(safe-area-inset-bottom));
+      gap: 8px;
+    }
+
+    .nav button {
+      flex: 1;
+      border: 0;
+      background: none;
+      color: #999;
+      padding: 8px;
+    }
+
+    .nav .on {
+      color: #d7ff55;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      TW<b>IN</b>
+    </header>
+
+    <!-- INICIO -->
+
+    <section id="home">
+
+      <div class="hero">
+        <h1>
+          Tu doble.<br>
+          Tu voz.
+        </h1>
+
+        <p class="muted">
+          Crea contenido con tu identidad digital.
+        </p>
+      </div>
+
+      <div class="card">
+        <b>Crear mi Twin</b>
+
+        <p class="muted">
+          Captura tu rostro y tu voz.
+          La cámara solo se activa cuando tú lo pides.
+        </p>
+
+        <button
+          class="btn"
+          onclick="go('face')"
+        >
+          Empezar
+        </button>
+      </div>
+
+      <div class="card">
+        <b>Studio</b>
+
+        <p class="muted">
+          Crea podcasts, Reels y vídeos
+          utilizando tu identidad digital.
+        </p>
+
+        <button
+          class="btn secondary"
+          onclick="go('studio')"
+        >
+          Abrir Studio
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- ROSTRO -->
+
+    <section
+      id="face"
+      class="hidden"
+    >
+
+      <h2>Rostro</h2>
+
+      <p class="muted">
+        Te pediremos permiso antes
+        de activar la cámara.
+      </p>
+
+      <button
+        class="btn"
+        id="camBtn"
+        onclick="camera()"
+      >
+        Activar cámara
+      </button>
+
+      <div
+        class="video hidden"
+        id="videoBox"
+      >
+
+        <video
+          id="cam"
+          autoplay
+          muted
+          playsinline
+        ></video>
+
+        <div class="guide"></div>
+
+      </div>
+
+      <div
+        class="status"
+        id="status"
+      ></div>
+
+      <button
+        class="btn secondary hidden"
+        id="nextBtn"
+        onclick="voice()"
+      >
+        Continuar con voz
+      </button>
+
+    </section>
+
+
+    <!-- VOZ -->
+
+    <section
+      id="voice"
+      class="hidden"
+    >
+
+      <h2>Voz</h2>
+
+      <p class="muted">
+        Graba unos segundos utilizando
+        tu tono de voz normal.
+      </p>
+
+      <div class="card">
+
+        <p>
+          “Esta es mi voz. Quiero que mi Twin
+          hable de forma natural y conserve
+          mi manera de expresarme.”
+        </p>
+
+        <button
+          class="btn"
+          id="micBtn"
+          onclick="mic()"
+        >
+          Grabar voz
+        </button>
+
+        <div
+          class="status"
+          id="micStatus"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- STUDIO -->
+
+    <section
+      id="studio"
+      class="hidden"
+    >
+
+      <h2>Twin Studio</h2>
+
+      <div class="tabs">
+        <button class="tab on">Podcast</button>
+        <button class="tab">Reel 9:16</button>
+        <button class="tab">Story</button>
+      </div>
+
+      <label for="script">
+        ¿Qué quieres que diga?
+      </label>
+
+      <textarea
+        id="script"
+        placeholder="Hoy quiero hablarte de algo que aprendí..."
+      ></textarea>
+
+      <label>
+        Escena
+      </label>
+
+      <select>
+        <option>Podcast cálido</option>
+        <option>Estudio minimal</option>
+        <option>Casa natural</option>
+      </select>
+
+      <label>
+        Ángulo
+      </label>
+
+      <select>
+        <option>Frontal</option>
+        <option>¾ izquierda</option>
+        <option>Lateral</option>
+      </select>
+
+      <button
+        class="btn"
+        onclick="renderVideo()"
+      >
+        Crear vídeo
+      </button>
+
+      <div
+        class="status"
+        id="renderStatus"
+      ></div>
+
+      <div
+        id="resultBox"
+        class="card hidden"
+      >
+
+        <b>Tu vídeo</b>
+
+        <video
+          id="resultVideo"
+          controls
+          playsinline
+          style="
+            width:100%;
+            margin-top:12px;
+            border-radius:14px;
+          "
+        ></video>
+
+        <a
+          id="resultLink"
+          class="btn secondary"
+          style="
+            text-align:center;
+            text-decoration:none;
+            margin-top:12px;
+          "
+          target="_blank"
+          rel="noopener"
+        >
+          Abrir vídeo
+        </a>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- NAVEGACIÓN -->
+
+  <nav class="nav">
+
+    <button
+      id="nHome"
+      class="on"
+      onclick="go('home')"
+    >
+      Inicio
+    </button>
+
+    <button
+      id="nStudio"
+      onclick="go('studio')"
+    >
+      Studio
+    </button>
+
+  </nav>
+
+
+  <script>
+
+    let camStream = null;
+    let micStream = null;
+    let recorder = null;
+
+    const q = id =>
+      document.getElementById(id);
+
+
+    // ===============================
+    // DETENER CÁMARA / MICRÓFONO
+    // ===============================
+
+    function stopMedia() {
+
+      if (camStream) {
+        camStream
+          .getTracks()
+          .forEach(track => track.stop());
+
+        camStream = null;
+      }
+
+      if (micStream) {
+        micStream
+          .getTracks()
+          .forEach(track => track.stop());
+
+        micStream = null;
+      }
+    }
+
+
+    // ===============================
+    // NAVEGACIÓN
+    // ===============================
+
+    function go(id) {
+
+      if (id !== 'face') {
+        stopMedia();
+      }
+
+      ['home', 'face', 'voice', 'studio']
+        .forEach(section => {
+
+          q(section).classList.toggle(
+            'hidden',
+            section !== id
+          );
+
+        });
+
+      q('nHome').classList.toggle(
+        'on',
+        id === 'home' ||
+        id === 'face' ||
+        id === 'voice'
+      );
+
+      q('nStudio').classList.toggle(
+        'on',
+        id === 'studio'
+      );
+
+      window.scrollTo(0, 0);
+    }
+
+
+    // ===============================
+    // CÁMARA
+    // ===============================
+
+    async function camera() {
+
+      if (!window.isSecureContext) {
+        q('status').textContent =
+          'Abre TWIN desde una conexión HTTPS para utilizar la cámara.';
+
+        return;
+      }
+
+      if (!navigator.mediaDevices?.getUserMedia) {
+        q('status').textContent =
+          'Este navegador no permite acceder a la cámara.';
+
+        return;
+      }
+
+      try {
+
+        q('status').textContent =
+          'Solicitando permiso…';
+
+        camStream =
+          await navigator.mediaDevices.getUserMedia({
+
+            video: {
+              facingMode: 'user',
+
+              width: {
+                ideal: 720
+              },
+
+              height: {
+                ideal: 960
+              }
+            },
+
+            audio: false
+          });
+
+        q('cam').srcObject = camStream;
+
+        q('videoBox')
+          .classList.remove('hidden');
+
+        q('nextBtn')
+          .classList.remove('hidden');
+
+        q('camBtn')
+          .classList.add('hidden');
+
+        q('status').textContent =
+          'Cámara lista. Mira al frente y gira suavemente a ambos lados.';
+
+      } catch (error) {
+
+        q('status').textContent =
+          'No pude abrir la cámara. Revisa los permisos del navegador.';
+      }
+    }
+
+
+    // ===============================
+    // VOZ
+    // ===============================
+
+    function voice() {
+      stopMedia();
+      go('voice');
+    }
+
+
+    async function mic() {
+
+      if (
+        recorder &&
+        recorder.state === 'recording'
+      ) {
+        recorder.stop();
+        return;
+      }
+
+      if (!window.isSecureContext) {
+
+        q('micStatus').textContent =
+          'Abre TWIN mediante HTTPS para utilizar el micrófono.';
+
+        return;
+      }
+
+      if (
+        !window.MediaRecorder ||
+        !navigator.mediaDevices?.getUserMedia
+      ) {
+
+        q('micStatus').textContent =
+          'Este navegador no permite realizar esta grabación.';
+
+        return;
+      }
+
+      try {
+
+        micStream =
+          await navigator.mediaDevices.getUserMedia({
+            audio: true
+          });
+
+        recorder =
+          new MediaRecorder(micStream);
+
+        recorder.onstop = () => {
+
+          q('micBtn').textContent =
+            'Voz guardada ✓';
+
+          q('micStatus').textContent =
+            'Captura completada.';
+
+          stopMedia();
+
+          setTimeout(
+            () => go('studio'),
+            400
+          );
+        };
+
+        recorder.start();
+
+        q('micBtn').textContent =
+          'Detener';
+
+        q('micStatus').textContent =
+          'Grabando…';
+
+      } catch (error) {
+
+        q('micStatus').textContent =
+          'No pude abrir el micrófono. Revisa los permisos.';
+      }
+    }
+
+
+    // ===============================
+    // CREAR VÍDEO
+    // ===============================
+
+    async function renderVideo() {
+
+      const script =
+        q('script').value.trim();
+
+      if (!script) {
+
+        q('renderStatus').textContent =
+          'Escribe primero un guion.';
+
+        return;
+      }
+
+      q('renderStatus').textContent =
+        'Creando vídeo…';
+
+      q('resultBox')
+        .classList.add('hidden');
+
+
+      try {
+
+        /*
+         * Próximo paso:
+         * source_url y voice_id vendrán
+         * del Twin autenticado del usuario.
+         */
+
+        const source_url =
+          window.TWIN_SOURCE_URL || null;
+
+        const voice_id =
+          window.TWIN_VOICE_ID || null;
+
+
+        if (!source_url) {
+
+          throw new Error(
+            'Todavía no hay un avatar conectado a este usuario.'
+          );
+        }
+
+
+        const response =
+          await fetch('/api/video', {
+
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              script,
+              source_url,
+              voice_id
+            })
+          });
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            data.error ||
+            'No se pudo iniciar el vídeo.'
+          );
+        }
+
+
+        // Vídeo terminado inmediatamente
+
+        if (data.result_url) {
+
+          showResult(
+            data.result_url
+          );
+
+          return;
+        }
+
+
+        if (!data.id) {
+
+          throw new Error(
+            'D-ID no devolvió un identificador de vídeo.'
+          );
+        }
+
+
+        q('renderStatus').textContent =
+          'Procesando tu Twin…';
+
+
+        // Consultar estado
+
+        for (
+          let attempt = 0;
+          attempt < 60;
+          attempt++
+        ) {
+
+          await new Promise(resolve =>
+            setTimeout(resolve, 3000)
+          );
+
+
+          const statusResponse =
+            await fetch(
+              '/api/video?id=' +
+              encodeURIComponent(data.id)
+            );
+
+
+          const status =
+            await statusResponse.json();
+
+
+          if (!statusResponse.ok) {
+
+            throw new Error(
+              status.error ||
+              'Error consultando el vídeo.'
+            );
+          }
+
+
+          if (
+            status.status === 'done' &&
+            status.result_url
+          ) {
+
+            showResult(
+              status.result_url
+            );
+
+            return;
+          }
+
+
+          if (
+            status.status === 'error' ||
+            status.status === 'failed'
+          ) {
+
+            throw new Error(
+              'D-ID no pudo generar el vídeo.'
+            );
+          }
+
+
+          q('renderStatus').textContent =
+            'Procesando… ' +
+            Math.min(
+              95,
+              (attempt + 1) * 2
+            ) +
+            '%';
+        }
+
+
+        throw new Error(
+          'El vídeo está tardando más de lo esperado.'
+        );
+
+
+      } catch (error) {
+
+        q('renderStatus').textContent =
+          'Error: ' + error.message;
+      }
+    }
+
+
+    // ===============================
+    // MOSTRAR RESULTADO
+    // ===============================
+
+    function showResult(url) {
+
+      q('resultVideo').src = url;
+      q('resultLink').href = url;
+
+      q('resultBox')
+        .classList.remove('hidden');
+
+      q('renderStatus').textContent =
+        'Vídeo listo ✓';
+    }
+
+
+    // ===============================
+    // TABS
+    // ===============================
+
+    document
+      .querySelectorAll('.tab')
+      .forEach(button => {
+
+        button.onclick = () => {
+
+          document
+            .querySelectorAll('.tab')
+            .forEach(tab =>
+              tab.classList.remove('on')
+            );
+
+          button.classList.add('on');
+        };
+      });
+
+
+    window.addEventListener(
+      'pagehide',
+      stopMedia
+    );
+
+  </script>
+
+</body>
+</html>
