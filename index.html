@@ -1,987 +1,773 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b0b0d">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>MIKLOZ AI — Your Digital Self</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: #0b0b0d;
-      color: #f7f7f5;
-      font: 16px -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #09090b;
+      color: white;
     }
 
-    .app {
-      max-width: 430px;
-      margin: auto;
-      min-height: 100vh;
-      padding: 24px 18px 100px;
+    .container {
+      width: min(900px, 92%);
+      margin: 0 auto;
+      padding: 40px 0;
     }
 
-    header {
-      font-size: 24px;
-      font-weight: 900;
+    .brand {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .tagline {
+      color: #999;
       margin-bottom: 30px;
     }
 
-    header b { color: #d7ff55; }
-
-    h1 {
-      font-size: 42px;
-      line-height: .95;
-      letter-spacing: -2px;
-      margin: 0 0 14px;
-    }
-
-    .muted {
-      color: #9999a5;
-      line-height: 1.45;
-    }
-
     .card {
-      background: #151519;
-      border: 1px solid #292930;
-      border-radius: 20px;
-      padding: 17px;
-      margin: 16px 0;
+      background: #151518;
+      border: 1px solid #29292d;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 20px;
     }
 
-    .btn {
-      display: block;
+    input, textarea {
       width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 15px;
-      margin-top: 10px;
-      background: #d7ff55;
-      color: #0b0b0d;
-      font-weight: 800;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .secondary {
-      background: #25252b;
+      background: #0d0d10;
       color: white;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      border: 1px solid #303038;
-      background: #0e0e11;
-      color: white;
-      border-radius: 13px;
-      padding: 13px;
-      font: inherit;
-      margin: 7px 0 14px;
+      border: 1px solid #333;
+      padding: 14px;
+      border-radius: 10px;
+      margin: 7px 0;
+      font-size: 16px;
     }
 
     textarea {
-      height: 130px;
-      resize: none;
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 18px;
+      margin: 6px 4px 6px 0;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .primary {
+      background: white;
+      color: black;
+    }
+
+    .secondary {
+      background: #28282d;
+      color: white;
+    }
+
+    .danger {
+      background: #7f1d1d;
+      color: white;
     }
 
     .status {
-      min-height: 35px;
-      color: #b9b9c2;
-      font-size: 13px;
+      margin-top: 12px;
+      color: #bbb;
+      line-height: 1.5;
+    }
+
+    .success { color: #6ee7b7; }
+    .error { color: #fca5a5; }
+
+    video {
+      width: 100%;
+      max-height: 500px;
+      background: black;
+      border-radius: 14px;
+      margin: 15px 0;
+    }
+
+    .hidden { display: none; }
+
+    .consent-text {
+      background: #0d0d10;
+      padding: 18px;
+      border-radius: 12px;
+      line-height: 1.6;
+      margin: 15px 0;
+      border: 1px solid #333;
+    }
+
+    .timer {
+      font-size: 32px;
+      font-weight: bold;
       margin: 12px 0;
     }
 
-    .video {
-      margin-top: 16px;
-      aspect-ratio: 3 / 4;
-      background: #050505;
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .video video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1);
-    }
-
-    .guide {
-      position: absolute;
-      inset: 15% 18%;
-      border: 2px dashed #d7ff55;
-      border-radius: 45%;
-      pointer-events: none;
-    }
-
-    .badge {
+    .pill {
       display: inline-block;
-      background: #202026;
-      border-radius: 999px;
-      padding: 7px 10px;
-      color: #bbb;
-      font-size: 12px;
-      margin-bottom: 15px;
+      padding: 7px 12px;
+      border-radius: 100px;
+      background: #26262b;
+      margin-bottom: 12px;
+      font-size: 13px;
     }
 
-    .ready {
-      color: #d7ff55;
-    }
-
-    .nav {
-      position: fixed;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      width: min(430px, 100%);
-      display: flex;
-      background: #0b0b0df2;
-      border-top: 1px solid #25252a;
-      padding: 10px;
-      gap: 8px;
-    }
-
-    .nav button {
-      flex: 1;
-      border: 0;
-      background: none;
-      color: #999;
-      padding: 10px;
-    }
-
-    .nav .on {
-      color: #d7ff55;
+    h2 {
+      margin-top: 0;
     }
   </style>
 </head>
 
 <body>
 
-<main class="app">
+<div class="container">
 
-  <header>MIKLOZ <b>AI</b></header>
-
-  <!-- LOGIN -->
-
-  <section id="auth">
-
-    <h1>Your<br>Digital Self.</h1>
-
-    <p class="muted">
-      Crea tu identidad digital con tu rostro y tu voz.
-    </p>
-
-    <div class="card">
-
-      <b>MIKLOZ ID</b>
-
-      <input
-        id="email"
-        type="email"
-        placeholder="Email"
-        autocomplete="email"
-      >
-
-      <input
-        id="password"
-        type="password"
-        placeholder="Contraseña"
-        autocomplete="current-password"
-      >
-
-      <button class="btn" onclick="login()">
-        Iniciar sesión
-      </button>
-
-      <button class="btn secondary" onclick="register()">
-        Crear cuenta
-      </button>
-
-      <div id="authStatus" class="status"></div>
-
-    </div>
-
-  </section>
+  <div class="brand">MIKLOZ AI</div>
+  <div class="tagline">Your Digital Self.</div>
 
 
-  <!-- HOME -->
+  <!-- AUTH -->
 
-  <section id="home" class="hidden">
+  <div id="authCard" class="card">
 
-    <div id="userBadge" class="badge">
-      MIKLOZ ID
-    </div>
+    <h2>Entrar</h2>
 
-    <h1>
-      Tu doble.<br>
-      Tu voz.
-    </h1>
+    <input
+      id="email"
+      type="email"
+      placeholder="Email"
+    >
 
-    <p class="muted">
-      Tu identidad digital para crear contenido.
-    </p>
+    <input
+      id="password"
+      type="password"
+      placeholder="Contraseña"
+    >
+
+    <button
+      class="primary"
+      onclick="login()"
+    >
+      Entrar
+    </button>
+
+    <button
+      class="secondary"
+      onclick="register()"
+    >
+      Crear cuenta
+    </button>
+
+    <div
+      id="authStatus"
+      class="status"
+    ></div>
+
+  </div>
+
+
+  <!-- APP -->
+
+  <div id="app" class="hidden">
 
     <div class="card">
 
-      <b>MIKLOZ Twin</b>
+      <span class="pill">
+        MIKLOZ ID
+      </span>
 
-      <p id="twinStatus" class="muted">
-        Comprobando tu Twin...
-      </p>
+      <h2>Tu cuenta</h2>
+
+      <div id="userEmail"></div>
+
+      <div
+        id="twinStatus"
+        class="status"
+      ></div>
 
       <button
-        id="createTwinButton"
-        class="btn"
-        onclick="go('face')"
+        class="secondary"
+        onclick="logout()"
       >
-        Crear mi Twin
+        Cerrar sesión
       </button>
 
     </div>
 
 
-    <div class="card">
-
-      <b>MIKLOZ Studio</b>
-
-      <p class="muted">
-        Crea vídeos utilizando tu identidad digital.
-      </p>
-
-      <button
-        class="btn secondary"
-        onclick="go('studio')"
-      >
-        Abrir Studio
-      </button>
-
-    </div>
-
-    <button
-      class="btn secondary"
-      onclick="logout()"
-    >
-      Cerrar sesión
-    </button>
-
-  </section>
-
-
-  <!-- TWIN -->
-
-  <section id="face" class="hidden">
-
-    <h2>Crea tu Twin</h2>
-
-    <p class="muted">
-      Activa la cámara para comenzar la captura de tu identidad digital.
-    </p>
-
-    <button
-      id="camBtn"
-      class="btn"
-      onclick="camera()"
-    >
-      Activar cámara
-    </button>
-
-    <div id="videoBox" class="video hidden">
-
-      <video
-        id="cam"
-        autoplay
-        muted
-        playsinline
-      ></video>
-
-      <div class="guide"></div>
-
-    </div>
-
-    <div id="cameraStatus" class="status"></div>
-
-    <button
-      id="nextBtn"
-      class="btn secondary hidden"
-      onclick="go('voice')"
-    >
-      Continuar
-    </button>
-
-  </section>
-
-
-  <!-- VOZ -->
-
-  <section id="voice" class="hidden">
-
-    <h2>Tu voz</h2>
-
-    <p class="muted">
-      Graba tu voz para preparar tu identidad digital.
-    </p>
+    <!-- TWIN -->
 
     <div class="card">
+
+      <span class="pill">
+        MIKLOZ Twin
+      </span>
+
+      <h2>Crea tu Digital Self</h2>
 
       <p>
-        “Esta es mi voz. Autorizo la creación de mi identidad
-        digital dentro de mi cuenta de MIKLOZ.”
+        Necesitamos verificar tu consentimiento
+        y después grabar el vídeo con el que
+        entrenaremos tu Twin.
       </p>
 
-      <button
-        id="micBtn"
-        class="btn"
-        onclick="recordVoice()"
-      >
-        Grabar voz
-      </button>
 
-      <div id="voiceStatus" class="status"></div>
+      <!-- STEP 1 -->
 
-      <button
-        id="studioAfterVoice"
-        class="btn secondary hidden"
-        onclick="go('studio')"
+      <div id="step1">
+
+        <h3>1. Consentimiento</h3>
+
+        <input
+          id="avatarName"
+          placeholder="Tu nombre"
+        >
+
+        <button
+          class="primary"
+          onclick="createConsent()"
+        >
+          Generar consentimiento
+        </button>
+
+        <div
+          id="consentStatus"
+          class="status"
+        ></div>
+
+      </div>
+
+
+      <!-- STEP 2 -->
+
+      <div
+        id="step2"
+        class="hidden"
       >
-        Continuar a Studio
-      </button>
+
+        <h3>
+          2. Lee este texto mirando a cámara
+        </h3>
+
+        <div
+          id="consentText"
+          class="consent-text"
+        ></div>
+
+        <video
+          id="camera"
+          autoplay
+          muted
+          playsinline
+        ></video>
+
+        <div
+          id="recordTimer"
+          class="timer"
+        >
+          00:00
+        </div>
+
+        <button
+          id="startConsentBtn"
+          class="primary"
+          onclick="startConsentRecording()"
+        >
+          Grabar consentimiento
+        </button>
+
+        <button
+          id="stopConsentBtn"
+          class="danger hidden"
+          onclick="stopRecording()"
+        >
+          Terminar grabación
+        </button>
+
+        <div
+          id="recordStatus"
+          class="status"
+        ></div>
+
+      </div>
+
+
+      <!-- STEP 3 -->
+
+      <div
+        id="step3"
+        class="hidden"
+      >
+
+        <h3>
+          3. Vídeo de entrenamiento
+        </h3>
+
+        <p>
+          Habla de forma natural mirando a cámara.
+          Graba al menos 1 minuto.
+        </p>
+
+        <div
+          id="trainingTimer"
+          class="timer"
+        >
+          00:00
+        </div>
+
+        <button
+          id="startTrainingBtn"
+          class="primary"
+          onclick="startTrainingRecording()"
+        >
+          Empezar entrenamiento
+        </button>
+
+        <button
+          id="stopTrainingBtn"
+          class="danger hidden"
+          onclick="stopRecording()"
+        >
+          Terminar
+        </button>
+
+        <div
+          id="trainingStatus"
+          class="status"
+        ></div>
+
+      </div>
 
     </div>
 
-  </section>
 
+    <!-- STUDIO -->
 
-  <!-- STUDIO -->
+    <div class="card">
 
-  <section id="studio" class="hidden">
+      <span class="pill">
+        MIKLOZ Studio
+      </span>
 
-    <h2>MIKLOZ Studio</h2>
+      <h2>Crear vídeo</h2>
 
-    <label>¿Qué quieres que diga?</label>
+      <textarea
+        id="script"
+        placeholder="Escribe lo que quieres que diga tu Digital Self..."
+      ></textarea>
 
-    <textarea
-      id="script"
-      placeholder="Hoy quiero hablarte de..."
-    ></textarea>
+      <button
+        class="primary"
+        onclick="renderVideo()"
+      >
+        Generar vídeo
+      </button>
 
-    <label>Formato</label>
-
-    <select>
-      <option>Reel 9:16</option>
-      <option>Podcast</option>
-      <option>Story</option>
-    </select>
-
-    <button
-      class="btn"
-      onclick="renderVideo()"
-    >
-      Crear vídeo
-    </button>
-
-    <div id="renderStatus" class="status"></div>
-
-    <div id="resultBox" class="card hidden">
-
-      <b>Tu vídeo</b>
+      <div
+        id="videoStatus"
+        class="status"
+      ></div>
 
       <video
         id="resultVideo"
         controls
-        playsinline
-        style="width:100%;margin-top:12px;border-radius:14px"
+        class="hidden"
       ></video>
 
     </div>
 
-  </section>
+  </div>
 
-</main>
+</div>
 
-
-<nav id="nav" class="nav hidden">
-
-  <button
-    id="nHome"
-    class="on"
-    onclick="go('home')"
-  >
-    Inicio
-  </button>
-
-  <button
-    id="nStudio"
-    onclick="go('studio')"
-  >
-    Studio
-  </button>
-
-</nav>
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-  /* ================================
-     SUPABASE
-     ================================ */
+const SUPABASE_URL =
+  'https://nkkckhgsokshmgxxcqck.supabase.co';
 
-  const SUPABASE_URL =
-    'https://nkkckhgsokshmgxxcqck.supabase.co';
+const SUPABASE_ANON_KEY =
+  'sb_publishable_b0s4HLHt5hzd4KfmofYfCA_xVsm3vqt';
 
-  const SUPABASE_ANON_KEY =
-    'sb_publishable_b0s4HLHt5hzd4KfmofYfCA_xVsm3vqt';
-
-  const db = window.supabase.createClient(
+const db =
+  window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
 
 
-  let currentUser = null;
-  let currentProfile = null;
+let currentUser = null;
+let currentProfile = null;
 
-  let camStream = null;
-  let micStream = null;
-  let recorder = null;
+let consentId = null;
 
-  const q = id =>
-    document.getElementById(id);
+let mediaStream = null;
+let mediaRecorder = null;
+let recordedChunks = [];
 
+let recordingType = null;
 
-  /* ================================
-     INICIAR
-     ================================ */
-
-  async function init() {
-
-    try {
-
-      const {
-        data: { session }
-      } = await db.auth.getSession();
+let timerInterval = null;
+let recordingSeconds = 0;
 
 
-      if (session?.user) {
+/* =========================
+   INITIALIZE
+========================= */
 
-        currentUser = session.user;
+async function init() {
 
-        await ensureProfile();
-        await loadProfile();
+  const {
+    data: { session }
+  } = await db.auth.getSession();
 
-        showApp();
+  if (session?.user) {
 
-      } else {
+    currentUser = session.user;
 
-        showAuth();
-      }
+    await openApp();
 
-    } catch (error) {
+  }
 
-      console.error(error);
+}
 
-      q('authStatus').textContent =
-        'No se pudo conectar con MIKLOZ.';
-    }
+init();
+
+
+/* =========================
+   AUTH
+========================= */
+
+async function register() {
+
+  const email =
+    document.getElementById('email').value.trim();
+
+  const password =
+    document.getElementById('password').value;
+
+  const status =
+    document.getElementById('authStatus');
+
+
+  status.textContent =
+    'Creando cuenta...';
+
+
+  const { data, error } =
+    await db.auth.signUp({
+      email,
+      password
+    });
+
+
+  if (error) {
+
+    status.textContent =
+      error.message;
+
+    status.className =
+      'status error';
+
+    return;
   }
 
 
-  /* ================================
-     REGISTRO
-     ================================ */
+  if (!data.session) {
 
-  async function register() {
+    status.textContent =
+      'Cuenta creada. Revisa tu email para confirmar la cuenta.';
 
-    const email = q('email').value.trim();
-    const password = q('password').value;
+    status.className =
+      'status success';
 
-
-    if (!email || !password) {
-
-      q('authStatus').textContent =
-        'Introduce tu email y contraseña.';
-
-      return;
-    }
-
-
-    q('authStatus').textContent =
-      'Creando tu MIKLOZ ID…';
-
-
-    const { data, error } =
-      await db.auth.signUp({
-        email,
-        password
-      });
-
-
-    if (error) {
-
-      q('authStatus').textContent =
-        error.message;
-
-      return;
-    }
-
-
-    if (!data.session) {
-
-      q('authStatus').textContent =
-        'Cuenta creada. Revisa tu email para confirmar tu cuenta.';
-
-      return;
-    }
-
-
-    currentUser = data.user;
-
-    await ensureProfile();
-    await loadProfile();
-
-    showApp();
+    return;
   }
 
 
-  /* ================================
-     LOGIN
-     ================================ */
-
-  async function login() {
-
-    const email = q('email').value.trim();
-    const password = q('password').value;
+  currentUser =
+    data.user;
 
 
-    if (!email || !password) {
+  await openApp();
 
-      q('authStatus').textContent =
-        'Introduce tu email y contraseña.';
-
-      return;
-    }
+}
 
 
-    q('authStatus').textContent =
-      'Entrando…';
+async function login() {
+
+  const email =
+    document.getElementById('email').value.trim();
+
+  const password =
+    document.getElementById('password').value;
+
+  const status =
+    document.getElementById('authStatus');
 
 
-    const { data, error } =
-      await db.auth.signInWithPassword({
-        email,
-        password
-      });
+  status.textContent =
+    'Entrando...';
 
 
-    if (error) {
-
-      q('authStatus').textContent =
-        error.message;
-
-      return;
-    }
+  const { data, error } =
+    await db.auth.signInWithPassword({
+      email,
+      password
+    });
 
 
-    currentUser = data.user;
+  if (error) {
 
-    await ensureProfile();
-    await loadProfile();
+    status.textContent =
+      error.message;
 
-    showApp();
+    status.className =
+      'status error';
+
+    return;
   }
 
 
-  /* ================================
-     PERFIL
-     ================================ */
-
-  async function ensureProfile() {
-
-    if (!currentUser) return;
+  currentUser =
+    data.user;
 
 
-    const { data, error } =
+  await openApp();
+
+}
+
+
+async function logout() {
+
+  stopCamera();
+
+  await db.auth.signOut();
+
+  location.reload();
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+async function openApp() {
+
+  document
+    .getElementById('authCard')
+    .classList.add('hidden');
+
+  document
+    .getElementById('app')
+    .classList.remove('hidden');
+
+
+  document
+    .getElementById('userEmail')
+    .textContent =
+      currentUser.email;
+
+
+  await ensureProfile();
+
+  await loadProfile();
+
+}
+
+
+async function ensureProfile() {
+
+  const { data, error } =
+    await db
+      .from('profiles')
+      .select('id')
+      .eq('id', currentUser.id)
+      .maybeSingle();
+
+
+  if (error)
+    throw error;
+
+
+  if (!data) {
+
+    const { error: insertError } =
       await db
         .from('profiles')
-        .select('id')
-        .eq('id', currentUser.id)
-        .maybeSingle();
+        .insert({
+          id: currentUser.id
+        });
 
 
-    if (error) {
+    if (insertError)
+      throw insertError;
 
-      console.error(
-        'Error comprobando perfil:',
-        error
-      );
+  }
 
-      return;
-    }
+}
 
 
-    if (!data) {
+async function loadProfile() {
 
-      const { error: insertError } =
-        await db
-          .from('profiles')
-          .insert({
-            id: currentUser.id
-          });
+  const { data, error } =
+    await db
+      .from('profiles')
+      .select(
+        'id, avatar_id, voice_id, created_at'
+      )
+      .eq('id', currentUser.id)
+      .single();
 
 
-      if (insertError) {
+  if (error) {
 
-        console.error(
-          'Error creando perfil:',
-          insertError
-        );
-      }
-    }
+    console.error(error);
+
+    return;
   }
 
 
-  async function loadProfile() {
-
-    if (!currentUser) return;
-
-
-    const { data, error } =
-      await db
-        .from('profiles')
-        .select(
-          'id, avatar_id, voice_id, created_at'
-        )
-        .eq('id', currentUser.id)
-        .maybeSingle();
+  currentProfile =
+    data;
 
 
-    if (error) {
+  updateTwinStatus();
 
-      console.error(
-        'Error cargando perfil:',
-        error
-      );
-
-      currentProfile = null;
-
-      return;
-    }
+}
 
 
-    currentProfile = data;
+function updateTwinStatus() {
+
+  const el =
+    document.getElementById('twinStatus');
+
+
+  if (
+    currentProfile?.avatar_id &&
+    currentProfile?.voice_id
+  ) {
+
+    el.innerHTML =
+      '<span class="success">✓ Tu MIKLOZ Twin está listo.</span>';
+
+  } else {
+
+    el.textContent =
+      'Todavía no has creado tu Twin.';
+
   }
 
-
-  /* ================================
-     PANTALLAS
-     ================================ */
-
-  function showAuth() {
-
-    stopMedia();
-
-    ['home', 'face', 'voice', 'studio']
-      .forEach(id =>
-        q(id).classList.add('hidden')
-      );
-
-    q('auth').classList.remove('hidden');
-    q('nav').classList.add('hidden');
-  }
+}
 
 
-  function showApp() {
+/* =========================
+   CAMERA
+========================= */
 
-    q('auth').classList.add('hidden');
-    q('nav').classList.remove('hidden');
+async function startCamera() {
 
-    q('userBadge').textContent =
-      currentUser?.email || 'MIKLOZ ID';
-
-    updateTwinStatus();
-
-    go('home');
-  }
+  if (mediaStream)
+    return;
 
 
-  function go(id) {
-
-    if (!currentUser) {
-
-      showAuth();
-      return;
-    }
-
-
-    if (id !== 'face') {
-      stopMedia();
-    }
-
-
-    ['home', 'face', 'voice', 'studio']
-      .forEach(section => {
-
-        q(section).classList.toggle(
-          'hidden',
-          section !== id
-        );
-      });
-
-
-    q('nHome').classList.toggle(
-      'on',
-      id !== 'studio'
-    );
-
-    q('nStudio').classList.toggle(
-      'on',
-      id === 'studio'
-    );
-
-    window.scrollTo(0, 0);
-  }
-
-
-  function updateTwinStatus() {
-
-    if (
-      currentProfile?.avatar_id &&
-      currentProfile?.voice_id
-    ) {
-
-      q('twinStatus').innerHTML =
-        '<span class="ready">Tu Twin está listo ✓</span>';
-
-      q('createTwinButton').textContent =
-        'Actualizar mi Twin';
-
-    } else {
-
-      q('twinStatus').textContent =
-        'Todavía no has creado tu Twin.';
-
-      q('createTwinButton').textContent =
-        'Crear mi Twin';
-    }
-  }
-
-
-  /* ================================
-     CÁMARA
-     ================================ */
-
-  async function camera() {
-
-    if (
-      !navigator.mediaDevices ||
-      !navigator.mediaDevices.getUserMedia
-    ) {
-
-      q('cameraStatus').textContent =
-        'Este dispositivo no permite acceder a la cámara.';
-
-      return;
-    }
-
-
-    try {
-
-      q('cameraStatus').textContent =
-        'Solicitando permiso…';
-
-
-      camStream =
-        await navigator.mediaDevices.getUserMedia({
-
-          video: {
-            facingMode: 'user',
-            width: { ideal: 720 },
-            height: { ideal: 1280 }
+  mediaStream =
+    await navigator.mediaDevices
+      .getUserMedia({
+        video: {
+          width: {
+            ideal: 1280
           },
 
-          audio: true
-        });
-
-
-      q('cam').srcObject =
-        camStream;
-
-
-      q('videoBox')
-        .classList.remove('hidden');
-
-
-      q('nextBtn')
-        .classList.remove('hidden');
-
-
-      q('camBtn')
-        .classList.add('hidden');
-
-
-      q('cameraStatus').textContent =
-        'Cámara lista ✓';
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      q('cameraStatus').textContent =
-        'No pude acceder a la cámara. Revisa los permisos.';
-    }
-  }
-
-
-  /* ================================
-     VOZ
-     ================================ */
-
-  async function recordVoice() {
-
-    if (
-      recorder &&
-      recorder.state === 'recording'
-    ) {
-
-      recorder.stop();
-      return;
-    }
-
-
-    try {
-
-      micStream =
-        await navigator.mediaDevices.getUserMedia({
-          audio: true
-        });
-
-
-      const chunks = [];
-
-
-      recorder =
-        new MediaRecorder(micStream);
-
-
-      recorder.ondataavailable =
-        event => {
-
-          if (event.data.size > 0) {
-            chunks.push(event.data);
+          height: {
+            ideal: 720
           }
-        };
+        },
+
+        audio: true
+      });
 
 
-      recorder.onstop =
-        async () => {
+  document
+    .getElementById('camera')
+    .srcObject =
+      mediaStream;
 
-          const audioBlob =
-            new Blob(
-              chunks,
-              {
-                type:
-                  recorder.mimeType ||
-                  'audio/webm'
-              }
-            );
+}
 
 
-          console.log(
-            'Audio capturado:',
-            audioBlob.size,
-            'bytes'
-          );
+function stopCamera() {
+
+  if (!mediaStream)
+    return;
 
 
-          q('micBtn').textContent =
-            'Voz capturada ✓';
+  mediaStream
+    .getTracks()
+    .forEach(
+      track => track.stop()
+    );
 
 
-          q('voiceStatus').textContent =
-            'Grabación completada.';
+  mediaStream = null;
+
+}
 
 
-          q('studioAfterVoice')
-            .classList.remove('hidden');
+/* =========================
+   CONSENT
+========================= */
+
+async function createConsent() {
+
+  const name =
+    document
+      .getElementById('avatarName')
+      .value
+      .trim();
 
 
-          stopMedia();
-        };
+  const status =
+    document
+      .getElementById('consentStatus');
 
 
-      recorder.start();
+  if (!name) {
 
+    status.textContent =
+      'Escribe tu nombre.';
 
-      q('micBtn').textContent =
-        'Detener grabación';
+    return;
 
-
-      q('voiceStatus').textContent =
-        'Grabando…';
-
-
-    } catch (error) {
-
-      console.error(error);
-
-      q('voiceStatus').textContent =
-        'No pude acceder al micrófono.';
-    }
   }
 
 
-  /* ================================
-     STUDIO
-     ================================ */
-
-  async function renderVideo() {
-
-    const script =
-      q('script').value.trim();
+  status.textContent =
+    'Generando consentimiento...';
 
 
-    if (!script) {
+  try {
 
-      q('renderStatus').textContent =
-        'Escribe primero un guion.';
-
-      return;
-    }
-
-
-    await loadProfile();
-
-
-    if (!currentProfile?.avatar_id) {
-
-      q('renderStatus').textContent =
-        'Primero necesitas crear tu MIKLOZ Twin.';
-
-      return;
-    }
-
-
-    q('renderStatus').textContent =
-      'Creando vídeo…';
-
-
-    try {
-
-      const response =
-        await fetch('/api/video', {
-
+    const response =
+      await fetch(
+        '/api/avatar',
+        {
           method: 'POST',
 
           headers: {
@@ -990,7 +776,816 @@
           },
 
           body: JSON.stringify({
+            action:
+              'create_consent'
+          })
+        }
+      );
 
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok)
+      throw new Error(
+        data.error ||
+        'No se pudo crear el consentimiento.'
+      );
+
+
+    consentId =
+      data.consent_id;
+
+
+    document
+      .getElementById('consentText')
+      .textContent =
+        data.text;
+
+
+    document
+      .getElementById('step2')
+      .classList.remove('hidden');
+
+
+    status.innerHTML =
+      '<span class="success">Consentimiento preparado.</span>';
+
+
+    await startCamera();
+
+  }
+
+  catch (error) {
+
+    status.textContent =
+      error.message;
+
+    status.className =
+      'status error';
+
+  }
+
+}
+
+
+/* =========================
+   RECORDING
+========================= */
+
+function bestMimeType() {
+
+  const options = [
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm'
+  ];
+
+
+  for (const type of options) {
+
+    if (
+      MediaRecorder
+        .isTypeSupported(type)
+    ) {
+
+      return type;
+
+    }
+
+  }
+
+
+  return '';
+
+}
+
+
+async function startRecording(type) {
+
+  await startCamera();
+
+
+  recordedChunks = [];
+
+  recordingType =
+    type;
+
+  recordingSeconds =
+    0;
+
+
+  const mimeType =
+    bestMimeType();
+
+
+  mediaRecorder =
+    mimeType
+      ? new MediaRecorder(
+          mediaStream,
+          { mimeType }
+        )
+      : new MediaRecorder(
+          mediaStream
+        );
+
+
+  mediaRecorder.ondataavailable =
+    event => {
+
+      if (
+        event.data &&
+        event.data.size > 0
+      ) {
+
+        recordedChunks.push(
+          event.data
+        );
+
+      }
+
+    };
+
+
+  mediaRecorder.onstop =
+    handleRecordingFinished;
+
+
+  mediaRecorder.start(1000);
+
+
+  startTimer();
+
+}
+
+
+async function startConsentRecording() {
+
+  document
+    .getElementById('startConsentBtn')
+    .classList.add('hidden');
+
+
+  document
+    .getElementById('stopConsentBtn')
+    .classList.remove('hidden');
+
+
+  document
+    .getElementById('recordStatus')
+    .textContent =
+      'Grabando consentimiento...';
+
+
+  await startRecording(
+    'consent'
+  );
+
+}
+
+
+async function startTrainingRecording() {
+
+  document
+    .getElementById('startTrainingBtn')
+    .classList.add('hidden');
+
+
+  document
+    .getElementById('stopTrainingBtn')
+    .classList.remove('hidden');
+
+
+  document
+    .getElementById('trainingStatus')
+    .textContent =
+      'Grabando vídeo de entrenamiento...';
+
+
+  await startRecording(
+    'training'
+  );
+
+}
+
+
+function stopRecording() {
+
+  if (
+    !mediaRecorder ||
+    mediaRecorder.state ===
+      'inactive'
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    recordingType ===
+      'training' &&
+    recordingSeconds < 60
+  ) {
+
+    document
+      .getElementById('trainingStatus')
+      .textContent =
+        'Graba al menos 60 segundos antes de terminar.';
+
+    return;
+
+  }
+
+
+  mediaRecorder.stop();
+
+  stopTimer();
+
+}
+
+
+/* =========================
+   TIMER
+========================= */
+
+function startTimer() {
+
+  updateTimer();
+
+
+  timerInterval =
+    setInterval(
+      () => {
+
+        recordingSeconds++;
+
+        updateTimer();
+
+      },
+      1000
+    );
+
+}
+
+
+function stopTimer() {
+
+  clearInterval(
+    timerInterval
+  );
+
+  timerInterval = null;
+
+}
+
+
+function updateTimer() {
+
+  const minutes =
+    String(
+      Math.floor(
+        recordingSeconds / 60
+      )
+    ).padStart(2, '0');
+
+
+  const seconds =
+    String(
+      recordingSeconds % 60
+    ).padStart(2, '0');
+
+
+  const value =
+    `${minutes}:${seconds}`;
+
+
+  if (
+    recordingType ===
+      'consent'
+  ) {
+
+    document
+      .getElementById('recordTimer')
+      .textContent =
+        value;
+
+  }
+
+
+  if (
+    recordingType ===
+      'training'
+  ) {
+
+    document
+      .getElementById('trainingTimer')
+      .textContent =
+        value;
+
+  }
+
+}
+
+
+/* =========================
+   UPLOAD
+========================= */
+
+async function uploadVideo(
+  blob,
+  type
+) {
+
+  const extension =
+    'webm';
+
+
+  const path =
+    `${currentUser.id}/${type}-${Date.now()}.${extension}`;
+
+
+  const {
+    error: uploadError
+  } =
+    await db
+      .storage
+      .from('raw-videos')
+      .upload(
+        path,
+        blob,
+        {
+          contentType:
+            blob.type ||
+            'video/webm',
+
+          upsert: false
+        }
+      );
+
+
+  if (uploadError)
+    throw uploadError;
+
+
+  const {
+    data,
+    error
+  } =
+    await db
+      .storage
+      .from('raw-videos')
+      .createSignedUrl(
+        path,
+        3600
+      );
+
+
+  if (error)
+    throw error;
+
+
+  return {
+    path,
+    signedUrl:
+      data.signedUrl
+  };
+
+}
+
+
+/* =========================
+   RECORDING FINISHED
+========================= */
+
+async function handleRecordingFinished() {
+
+  const type =
+    recordingType;
+
+
+  const mimeType =
+    mediaRecorder.mimeType ||
+    'video/webm';
+
+
+  const blob =
+    new Blob(
+      recordedChunks,
+      {
+        type: mimeType
+      }
+    );
+
+
+  try {
+
+    if (
+      type ===
+      'consent'
+    ) {
+
+      const status =
+        document
+          .getElementById(
+            'recordStatus'
+          );
+
+
+      status.textContent =
+        'Subiendo consentimiento...';
+
+
+      const uploaded =
+        await uploadVideo(
+          blob,
+          'consent'
+        );
+
+
+      status.textContent =
+        'Verificando consentimiento...';
+
+
+      const name =
+        document
+          .getElementById(
+            'avatarName'
+          )
+          .value
+          .trim();
+
+
+      const response =
+        await fetch(
+          '/api/avatar',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              action:
+                'verify_consent',
+
+              consent_id:
+                consentId,
+
+              source_url:
+                uploaded.signedUrl,
+
+              name
+            })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok)
+        throw new Error(
+          data.error ||
+          'No se pudo verificar el consentimiento.'
+        );
+
+
+      status.innerHTML =
+        '<span class="success">✓ Consentimiento enviado correctamente.</span>';
+
+
+      document
+        .getElementById('step3')
+        .classList.remove('hidden');
+
+
+      document
+        .getElementById('stopConsentBtn')
+        .classList.add('hidden');
+
+    }
+
+
+    if (
+      type ===
+      'training'
+    ) {
+
+      const status =
+        document
+          .getElementById(
+            'trainingStatus'
+          );
+
+
+      status.textContent =
+        'Subiendo vídeo de entrenamiento...';
+
+
+      const uploaded =
+        await uploadVideo(
+          blob,
+          'training'
+        );
+
+
+      status.textContent =
+        'Creando tu MIKLOZ Twin...';
+
+
+      const name =
+        document
+          .getElementById(
+            'avatarName'
+          )
+          .value
+          .trim();
+
+
+      const response =
+        await fetch(
+          '/api/avatar',
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              action:
+                'create_avatar',
+
+              consent_id:
+                consentId,
+
+              source_url:
+                uploaded.signedUrl,
+
+              name
+            })
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (!response.ok)
+        throw new Error(
+          data.error ||
+          'No se pudo crear el Twin.'
+        );
+
+
+      status.textContent =
+        'Entrenando tu Digital Self...';
+
+
+      await pollAvatar(
+        data.avatar_id
+      );
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+
+    const target =
+      type === 'consent'
+        ? document.getElementById(
+            'recordStatus'
+          )
+        : document.getElementById(
+            'trainingStatus'
+          );
+
+
+    target.textContent =
+      error.message;
+
+    target.className =
+      'status error';
+
+  }
+
+}
+
+
+/* =========================
+   AVATAR POLLING
+========================= */
+
+async function pollAvatar(
+  avatarId
+) {
+
+  const status =
+    document
+      .getElementById(
+        'trainingStatus'
+      );
+
+
+  for (
+    let attempt = 0;
+    attempt < 120;
+    attempt++
+  ) {
+
+    await sleep(5000);
+
+
+    const response =
+      await fetch(
+        `/api/avatar?avatar_id=${encodeURIComponent(
+          avatarId
+        )}`
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok)
+      throw new Error(
+        data.error ||
+        'Error consultando el Twin.'
+      );
+
+
+    status.textContent =
+      `Entrenando Twin: ${data.status || 'procesando'}...`;
+
+
+    if (
+      data.status ===
+      'done'
+    ) {
+
+      const {
+        error
+      } =
+        await db
+          .from('profiles')
+          .update({
+            avatar_id:
+              avatarId,
+
+            voice_id:
+              data.voice_id
+          })
+          .eq(
+            'id',
+            currentUser.id
+          );
+
+
+      if (error)
+        throw error;
+
+
+      await loadProfile();
+
+
+      status.innerHTML =
+        '<span class="success">✓ Tu MIKLOZ Twin está listo.</span>';
+
+
+      document
+        .getElementById(
+          'stopTrainingBtn'
+        )
+        .classList.add(
+          'hidden'
+        );
+
+
+      return;
+
+    }
+
+
+    if (
+      data.status ===
+        'error' ||
+      data.status ===
+        'failed'
+    ) {
+
+      throw new Error(
+        'D-ID no pudo entrenar el Twin.'
+      );
+
+    }
+
+  }
+
+
+  throw new Error(
+    'El entrenamiento continúa. Vuelve a consultar en unos minutos.'
+  );
+
+}
+
+
+function sleep(ms) {
+
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
+  );
+
+}
+
+
+/* =========================
+   STUDIO
+========================= */
+
+async function renderVideo() {
+
+  const script =
+    document
+      .getElementById(
+        'script'
+      )
+      .value
+      .trim();
+
+
+  const status =
+    document
+      .getElementById(
+        'videoStatus'
+      );
+
+
+  const video =
+    document
+      .getElementById(
+        'resultVideo'
+      );
+
+
+  if (!script) {
+
+    status.textContent =
+      'Escribe un guion.';
+
+    return;
+
+  }
+
+
+  await loadProfile();
+
+
+  if (
+    !currentProfile?.avatar_id
+  ) {
+
+    status.textContent =
+      'Primero debes crear tu MIKLOZ Twin.';
+
+    return;
+
+  }
+
+
+  status.textContent =
+    'Generando vídeo...';
+
+
+  try {
+
+    const response =
+      await fetch(
+        '/api/video',
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body: JSON.stringify({
             script,
 
             avatar_id:
@@ -999,190 +1594,134 @@
             voice_id:
               currentProfile.voice_id
           })
-        });
-
-
-      const data =
-        await response.json();
-
-
-      if (!response.ok) {
-
-        throw new Error(
-          data.error ||
-          'No se pudo crear el vídeo.'
-        );
-      }
-
-
-      if (data.result_url) {
-
-        showResult(
-          data.result_url
-        );
-
-        return;
-      }
-
-
-      if (!data.id) {
-
-        throw new Error(
-          'No se recibió el identificador del vídeo.'
-        );
-      }
-
-
-      q('renderStatus').textContent =
-        'Procesando tu Twin…';
-
-
-      for (
-        let attempt = 0;
-        attempt < 60;
-        attempt++
-      ) {
-
-        await new Promise(
-          resolve =>
-            setTimeout(resolve, 3000)
-        );
-
-
-        const statusResponse =
-          await fetch(
-            '/api/video?id=' +
-            encodeURIComponent(data.id)
-          );
-
-
-        const status =
-          await statusResponse.json();
-
-
-        if (!statusResponse.ok) {
-
-          throw new Error(
-            status.error ||
-            'Error consultando el vídeo.'
-          );
         }
-
-
-        if (
-          status.status === 'done' &&
-          status.result_url
-        ) {
-
-          showResult(
-            status.result_url
-          );
-
-          return;
-        }
-
-
-        if (
-          status.status === 'error' ||
-          status.status === 'failed'
-        ) {
-
-          throw new Error(
-            'No se pudo generar el vídeo.'
-          );
-        }
-      }
-
-
-      throw new Error(
-        'El vídeo está tardando más de lo esperado.'
       );
 
 
-    } catch (error) {
+    const data =
+      await response.json();
 
-      console.error(error);
 
-      q('renderStatus').textContent =
-        'Error: ' + error.message;
+    if (!response.ok)
+      throw new Error(
+        data.error ||
+        'No se pudo generar el vídeo.'
+      );
+
+
+    await pollVideo(
+      data.id
+    );
+
+  }
+
+  catch (error) {
+
+    status.textContent =
+      error.message;
+
+    status.className =
+      'status error';
+
+  }
+
+}
+
+
+async function pollVideo(
+  sceneId
+) {
+
+  const status =
+    document
+      .getElementById(
+        'videoStatus'
+      );
+
+
+  const video =
+    document
+      .getElementById(
+        'resultVideo'
+      );
+
+
+  for (
+    let attempt = 0;
+    attempt < 120;
+    attempt++
+  ) {
+
+    await sleep(3000);
+
+
+    const response =
+      await fetch(
+        `/api/video?id=${encodeURIComponent(
+          sceneId
+        )}`
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok)
+      throw new Error(
+        data.error ||
+        'Error consultando el vídeo.'
+      );
+
+
+    status.textContent =
+      `Generando: ${data.status || 'procesando'}...`;
+
+
+    if (
+      data.status ===
+      'done' &&
+      data.result_url
+    ) {
+
+      video.src =
+        data.result_url;
+
+
+      video.classList
+        .remove('hidden');
+
+
+      status.innerHTML =
+        '<span class="success">✓ Vídeo generado.</span>';
+
+
+      return;
+
     }
-  }
 
 
-  function showResult(url) {
+    if (
+      data.status ===
+        'error' ||
+      data.status ===
+        'failed'
+    ) {
 
-    q('resultVideo').src =
-      url;
+      throw new Error(
+        'No se pudo generar el vídeo.'
+      );
 
-
-    q('resultBox')
-      .classList.remove('hidden');
-
-
-    q('renderStatus').textContent =
-      'Vídeo listo ✓';
-  }
-
-
-  /* ================================
-     CERRAR SESIÓN
-     ================================ */
-
-  async function logout() {
-
-    stopMedia();
-
-    await db.auth.signOut();
-
-    currentUser = null;
-    currentProfile = null;
-
-    showAuth();
-  }
-
-
-  /* ================================
-     CERRAR CÁMARA / MICRO
-     ================================ */
-
-  function stopMedia() {
-
-    if (camStream) {
-
-      camStream
-        .getTracks()
-        .forEach(track =>
-          track.stop()
-        );
-
-      camStream = null;
     }
 
-
-    if (micStream) {
-
-      micStream
-        .getTracks()
-        .forEach(track =>
-          track.stop()
-        );
-
-      micStream = null;
-    }
   }
 
 
-  window.addEventListener(
-    'pagehide',
-    stopMedia
+  throw new Error(
+    'La generación está tardando más de lo esperado.'
   );
 
-
-  /* ================================
-     ARRANCAR MIKLOZ
-     ================================ */
-
-  init();
+}
 
 </script>
 
